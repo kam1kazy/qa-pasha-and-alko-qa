@@ -1,11 +1,11 @@
-import { Task } from '@/types/kanban';
+import { Task } from '@/widgets/kanban/types/kanban';
 
-interface KanbanTaskDetailsModalProps {
+interface TaskDetailsModalProps {
   task: Task;
   onClose: () => void;
 }
 
-const KanbanTaskDetailsModal: React.FC<KanbanTaskDetailsModalProps> = ({ task, onClose }) => (
+export const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({ task, onClose }) => (
   <div
     style={{
       position: 'fixed',
@@ -30,4 +30,4 @@ const KanbanTaskDetailsModal: React.FC<KanbanTaskDetailsModalProps> = ({ task, o
   </div>
 );
 
-export default KanbanTaskDetailsModal;
+export default TaskDetailsModal;

@@ -1,6 +1,6 @@
-import { Task } from '@/types/kanban';
+import { Task } from '@/widgets/kanban/types/kanban';
 
-import KanbanTaskCard from '../KanbanTaskCard/KanbanTaskCard';
+import KanbanTaskCard from '../TaskCard/TaskCard';
 
 interface KanbanTaskListProps {
   tasks: Task[];

@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { initialColumns } from '@/components/dashboard/kanban/taskList';
-import { Task } from '@/types/kanban';
+import { initialColumns } from '@/widgets/kanban/config/taskList.mockData';
+import { Task } from '@/widgets/kanban/types/kanban';
 
 interface TasksState {
   tasks: Record<string, Task[]>;

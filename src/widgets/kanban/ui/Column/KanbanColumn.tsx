@@ -1,12 +1,12 @@
 import { useDroppable } from '@dnd-kit/core';
 import React from 'react';
 
-import { KanbanColumn as KanbanColumnType } from '@/types/kanban';
+import { KanbanColumn as KanbanColumnType } from '@/widgets/kanban/types/kanban';
 
-import KanbanAddTaskButton from '../KanbanAddTaskButton/KanbanAddTaskButton';
+import KanbanAddTaskButton from '../AddTaskButton/AddTaskButton';
+import KanbanColumnHeader from '../ColumnHeader';
+import KanbanTaskList from '../TaskList/TaskList';
 import { useKanbanColumn } from './hooks/useKanbanColumn';
-import KanbanColumnHeader from './KanbanColumnHeader';
-import KanbanTaskList from './KanbanTaskList';
 
 interface KanbanColumnProps {
   column: KanbanColumnType;

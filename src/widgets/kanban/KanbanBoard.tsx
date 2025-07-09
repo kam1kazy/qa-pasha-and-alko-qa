@@ -5,12 +5,11 @@ import { closestCenter, DndContext } from '@dnd-kit/core';
 import { useSelector } from 'react-redux';
 
 import { RootState } from '@/store';
-import { KanbanColumn as KanbanColumnType } from '@/types/kanban';
+import { KanbanColumn as KanbanColumnType } from '@/widgets/kanban/types/kanban';
 
 // import { addTask, moveTask } from '@/store/slices/tasksSlice';
 import { useDragEnd } from './hooks/useDragEnd';
-import KanbanColumn from './KanbanColumn/KanbanColumn';
-// Пример начальных данных
+import KanbanColumn from './ui/Column/KanbanColumn';
 
 const KanbanBoard: React.FC = () => {
   const columns = useSelector((state: RootState) => state.columns.columns);

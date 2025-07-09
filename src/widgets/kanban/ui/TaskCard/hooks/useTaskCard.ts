@@ -2,9 +2,9 @@
 
 import { useState } from 'react';
 
-import { Task } from '@/types/kanban';
+import { Task } from '@/widgets/kanban/types/kanban';
 
-export const useKanbanTaskCard = (_task: KanbanTask) => {
+export const useTaskCard = (_task: Task) => {
   const [isModalOpen, setModalOpen] = useState(false);
 
   const onClick = () => setModalOpen(true);

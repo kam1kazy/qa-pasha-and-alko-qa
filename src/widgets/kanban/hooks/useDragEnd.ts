@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 
 import { setColumns } from '@/store/slices/columnsSlice';
 import { moveTask } from '@/store/slices/tasksSlice';
-import { KanbanColumn as KanbanColumnType, Task } from '@/types/kanban';
+import { KanbanColumn as KanbanColumnType, Task } from '@/widgets/kanban/types/kanban';
 
 interface IProps {
   columns: KanbanColumnType[];

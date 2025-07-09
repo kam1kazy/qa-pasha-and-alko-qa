@@ -4,7 +4,7 @@ export interface Task {
   id: string;
   title: string;
   description: string;
-  columnId: string;
+  columnId: number;
   progress?: number; // 0-100
   difficulty?: KanbanDifficulty;
   topics?: string[];

@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { initialColumns } from '@/components/dashboard/kanban/taskList';
-import { KanbanColumn } from '@/types/kanban';
+import { initialColumns } from '@/widgets/kanban/config/taskList.mockData';
+import { KanbanColumn } from '@/widgets/kanban/types/kanban';
 
 interface ColumnsState {
   columns: KanbanColumn[];
@@ -22,7 +22,9 @@ const columnsSlice = createSlice({
       state.columns.push(action.payload);
     },
     removeColumn: (state, action: PayloadAction<string>) => {
-      state.columns = state.columns.filter((column) => column.id !== action.payload);
+      state.columns = state.columns.filter(
+        (column) => column.id !== action.payload
+      );
     },
     updateColumn: (
       state,
@@ -37,5 +39,6 @@ const columnsSlice = createSlice({
   },
 });
 
-export const { setColumns, addColumn, removeColumn, updateColumn } = columnsSlice.actions;
+export const { setColumns, addColumn, removeColumn, updateColumn } =
+  columnsSlice.actions;
 export default columnsSlice.reducer;
