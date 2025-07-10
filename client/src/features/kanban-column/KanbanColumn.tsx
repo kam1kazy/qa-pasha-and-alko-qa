@@ -1,7 +1,7 @@
 import { useDroppable } from '@dnd-kit/core';
 
 import { IKanbanColumn } from '@/entities/task/models/task.types';
-import { KanbanAddTaskButton } from '@/features/add-task/ui/AddTaskButton';
+import { KanbanAddTaskButton } from '@/features/add-task/AddTaskButton';
 import { KanbanTaskList } from '@/features/kanban-tasks-list/TaskList';
 import { KanbanColumnHeader } from '@/shared/ui/ColumnHeader/ColumnHeader';
 

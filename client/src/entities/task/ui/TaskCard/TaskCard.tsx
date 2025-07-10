@@ -2,15 +2,13 @@ import { useSortable } from '@dnd-kit/sortable';
 
 import { ITask } from '@/entities/task/models/task.types';
 import { useTaskCard } from '@/entities/task/models/useTaskCard';
+import { TaskActions } from '@/entities/task/ui/TaskActions/TaskActions';
+import { DifficultyTag } from '@/shared/ui/DifficultyTag/DifficultyTag';
+import { IconText } from '@/shared/ui/IconText/IconText';
+import { ProgressCircle } from '@/shared/ui/ProgressCircle/ProgressCircle';
+import { SubtasksInfo } from '@/shared/ui/SubtasksInfo/SubtasksInfo';
+import { TopicTags } from '@/shared/ui/TopicTags/TopicTags';
 
-import {
-  DifficultyTag,
-  IconText,
-  ProgressCircle,
-  SubtasksInfo,
-  TaskActions,
-  TopicTags,
-} from '.';
 import styles from './TaskCard.module.scss';
 
 interface TaskCardProps {
