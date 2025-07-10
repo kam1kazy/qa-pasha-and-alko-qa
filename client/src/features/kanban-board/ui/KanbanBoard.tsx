@@ -3,8 +3,8 @@
 import { useSelector } from 'react-redux';
 
 import { KanbanColumn as KanbanColumnType } from '@/entities/task/models/task.types';
-import { KanbanDndProvider } from '@/providers/KanbanDndProvider';
 import { RootState } from '@/shared/lib/redux/store';
+import { KanbanDndProvider } from '@/shared/providers/KanbanDndProvider';
 
 import KanbanColumn from '../../kanban-column/ui/KanbanColumn';
 
