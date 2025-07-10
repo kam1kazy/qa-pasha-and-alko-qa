@@ -4,15 +4,17 @@ import { useEffect, useState } from 'react';
 import { IKanbanColumn } from '@/entities/task/models/task.types';
 import { useDragEnd } from '@/features/kanban-board/model/useDragEnd';
 
-export const KanbanDndProvider = ({
-  children,
-  columns,
-}: {
+interface KanbanColumnsListProps {
   children: React.ReactNode;
   columns: IKanbanColumn[];
+}
+
+export const KanbanDndProvider: React.FC<KanbanColumnsListProps> = ({
+  children,
+  columns,
 }) => {
   const [mounted, setMounted] = useState(false);
-  const handleDragEnd = useDragEnd({ columns }); // Перенесите сюда
+  const handleDragEnd = useDragEnd({ columns });
 
   useEffect(() => {
     setMounted(true);
