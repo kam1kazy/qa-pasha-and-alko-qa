@@ -4,7 +4,6 @@ import React from 'react';
 import { Task } from '@/entities/task/models/task.types';
 
 import { useTaskCard } from '../../models/useTaskCard';
-import styles from './KanbanTaskCard.module.scss';
 import {
   DifficultyTag,
   IconText,
@@ -12,7 +11,8 @@ import {
   SubtasksInfo,
   TaskActions,
   TopicTags,
-} from './ui';
+} from '.';
+import styles from './KanbanTaskCard.module.scss';
 
 interface KanbanTaskCardProps {
   task: Task;
