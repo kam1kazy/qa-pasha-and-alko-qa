@@ -1,4 +1,4 @@
-import { useDraggable } from '@dnd-kit/core';
+import { useSortable } from '@dnd-kit/sortable';
 
 import { ITask } from '@/entities/task/models/task.types';
 import { useTaskCard } from '@/entities/task/models/useTaskCard';
@@ -24,16 +24,26 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
     // closeModal
   } = useTaskCard(task);
 
-  const { attributes, listeners, setNodeRef, transform } = useDraggable({
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+    isOver,
+  } = useSortable({
     id: task.id,
-    data: task,
   });
 
-  const style = transform
-    ? {
-        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-      }
-    : undefined;
+  const style = {
+    transform: transform
+      ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
+      : undefined,
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+    borderTop: isOver ? '2px solid #4f8cff' : undefined,
+  };
 
   return (
     <>

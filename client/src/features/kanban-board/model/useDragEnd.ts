@@ -56,7 +56,7 @@ export const useDragEnd = ({ columns }: IProps) => {
       if (idx === toColumnIdx) {
         return {
           ...col,
-          tasks: [...col.tasks, { ...task!, columnId: col.id }],
+          tasks: [...col.tasks, { ...task!, columnId: Number(col.id) }],
         };
       }
       return col;

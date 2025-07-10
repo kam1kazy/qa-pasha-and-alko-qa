@@ -5,8 +5,8 @@ import { KanbanAddTaskButton } from '@/features/add-task/ui/AddTaskButton';
 import { KanbanTaskList } from '@/features/kanban-tasks-list/TaskList';
 import { KanbanColumnHeader } from '@/shared/ui/ColumnHeader/ColumnHeader';
 
-import { useKanbanColumn } from '../model/useKanbanColumn';
 import styles from './KanbanColumn.module.scss';
+import { useKanbanColumn } from './model/useKanbanColumn';
 
 interface KanbanColumnProps {
   column: IKanbanColumn;

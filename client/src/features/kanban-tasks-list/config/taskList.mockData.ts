@@ -1,6 +1,6 @@
-import { KanbanColumn as KanbanColumnType } from '@/entities/task/models/task.types';
+import { IKanbanColumn } from '@/entities/task/models/task.types';
 
-export const initialColumns: KanbanColumnType[] = [
+export const initialColumns: IKanbanColumn[] = [
   {
     id: 'todo',
     title: 'To do',
