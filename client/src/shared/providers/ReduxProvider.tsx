@@ -4,6 +4,6 @@ import { Provider } from 'react-redux';
 
 import { store } from '@/shared/lib/redux/store';
 
-export function ReduxProvider({ children }: { children: React.ReactNode }) {
+export const ReduxProvider = ({ children }: { children: React.ReactNode }) => {
   return <Provider store={store}>{children}</Provider>;
-}
+};
