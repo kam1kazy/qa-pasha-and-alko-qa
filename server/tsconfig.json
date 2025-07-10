@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "nodenext",
+    "rootDir": ".",
+    "moduleResolution": "nodenext",
+    "resolveJsonModule": true,
+    "outDir": "build",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "skipLibCheck": true
+  },
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "eslint.config.mjs",
+    "*.config.*",
+    "node_modules",
+    "dist",
+    "examples",
+  ]
+}
