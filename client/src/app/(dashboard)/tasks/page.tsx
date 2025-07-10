@@ -1,5 +1,3 @@
-import React from 'react';
-
 import KanbanBoard from '@/features/kanban-board/ui/KanbanBoard';
 
 const TasksPage: React.FC = () => {
