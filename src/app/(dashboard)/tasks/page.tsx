@@ -1,6 +1,6 @@
 import React from 'react';
 
-import KanbanBoard from '@/widgets/kanban/KanbanBoard';
+import KanbanBoard from '@/features/kanban-board/ui/KanbanBoard';
 
 const TasksPage: React.FC = () => {
   return (
