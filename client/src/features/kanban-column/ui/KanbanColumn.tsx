@@ -1,9 +1,9 @@
 import { useDroppable } from '@dnd-kit/core';
 
 import { IKanbanColumn } from '@/entities/task/models/task.types';
-import KanbanAddTaskButton from '@/features/add-task/ui/AddTaskButton';
-import KanbanTaskList from '@/features/kanban-tasks-list/TaskList';
-import KanbanColumnHeader from '@/shared/ui/ColumnHeader/ColumnHeader';
+import { KanbanAddTaskButton } from '@/features/add-task/ui/AddTaskButton';
+import { KanbanTaskList } from '@/features/kanban-tasks-list/TaskList';
+import { KanbanColumnHeader } from '@/shared/ui/ColumnHeader/ColumnHeader';
 
 import { useKanbanColumn } from '../model/useKanbanColumn';
 import styles from './KanbanColumn.module.scss';
@@ -12,7 +12,7 @@ interface KanbanColumnProps {
   column: IKanbanColumn;
 }
 
-const KanbanColumn: React.FC<KanbanColumnProps> = ({ column }) => {
+export const KanbanColumn: React.FC<KanbanColumnProps> = ({ column }) => {
   const { tasks, onAddTask } = useKanbanColumn(column);
   const { setNodeRef, isOver } = useDroppable({
     id: column.id,
@@ -34,5 +34,3 @@ const KanbanColumn: React.FC<KanbanColumnProps> = ({ column }) => {
     </div>
   );
 };
-
-export default KanbanColumn;

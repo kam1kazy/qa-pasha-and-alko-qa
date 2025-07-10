@@ -2,7 +2,9 @@ interface KanbanAddTaskButtonProps {
   onAdd: () => void;
 }
 
-const KanbanAddTaskButton: React.FC<KanbanAddTaskButtonProps> = ({ onAdd }) => (
+export const KanbanAddTaskButton: React.FC<KanbanAddTaskButtonProps> = ({
+  onAdd,
+}) => (
   <button
     style={{
       marginTop: 8,
@@ -19,5 +21,3 @@ const KanbanAddTaskButton: React.FC<KanbanAddTaskButtonProps> = ({ onAdd }) => (
     + Add task
   </button>
 );
-
-export default KanbanAddTaskButton;

@@ -4,7 +4,7 @@ interface KanbanColumnHeaderProps {
   doneCount?: number;
 }
 
-const KanbanColumnHeader: React.FC<KanbanColumnHeaderProps> = ({
+export const KanbanColumnHeader: React.FC<KanbanColumnHeaderProps> = ({
   title,
   count,
   doneCount,
@@ -30,5 +30,3 @@ const KanbanColumnHeader: React.FC<KanbanColumnHeaderProps> = ({
     </span>
   </div>
 );
-
-export default KanbanColumnHeader;

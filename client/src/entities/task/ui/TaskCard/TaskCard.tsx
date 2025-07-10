@@ -1,8 +1,8 @@
 import { useDraggable } from '@dnd-kit/core';
 
 import { ITask } from '@/entities/task/models/task.types';
+import { useTaskCard } from '@/entities/task/models/useTaskCard';
 
-import { useTaskCard } from '../../models/useTaskCard';
 import {
   DifficultyTag,
   IconText,
@@ -11,18 +11,19 @@ import {
   TaskActions,
   TopicTags,
 } from '.';
-import styles from './KanbanTaskCard.module.scss';
+import styles from './TaskCard.module.scss';
 
-interface KanbanTaskCardProps {
+interface TaskCardProps {
   task: ITask;
 }
 
-const KanbanTaskCard: React.FC<KanbanTaskCardProps> = ({ task }) => {
+export const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
   const {
     onClick,
     // isModalOpen,
     // closeModal
   } = useTaskCard(task);
+
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: task.id,
     data: task,
@@ -67,5 +68,3 @@ const KanbanTaskCard: React.FC<KanbanTaskCardProps> = ({ task }) => {
     </>
   );
 };
-
-export default KanbanTaskCard;

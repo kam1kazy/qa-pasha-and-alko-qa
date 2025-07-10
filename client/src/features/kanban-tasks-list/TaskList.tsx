@@ -1,16 +1,14 @@
 import { ITask } from '@/entities/task/models/task.types';
-import KanbanTaskCard from '@/entities/task/ui/TaskCard/KanbanTaskCard';
+import { TaskCard } from '@/entities/task/ui/TaskCard/TaskCard';
 
 interface KanbanTaskListProps {
   tasks: ITask[];
 }
 
-const KanbanTaskList: React.FC<KanbanTaskListProps> = ({ tasks }) => (
+export const KanbanTaskList: React.FC<KanbanTaskListProps> = ({ tasks }) => (
   <div style={{ display: 'flex', flexDirection: 'column', gap: 8, flex: 1 }}>
     {tasks.map((task) => (
-      <KanbanTaskCard key={task.id} task={task} />
+      <TaskCard key={task.id} task={task} />
     ))}
   </div>
 );
-
-export default KanbanTaskList;
