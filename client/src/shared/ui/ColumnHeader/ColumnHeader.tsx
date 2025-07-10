@@ -1,5 +1,3 @@
-import React from 'react';
-
 interface KanbanColumnHeaderProps {
   title: string;
   count: number;

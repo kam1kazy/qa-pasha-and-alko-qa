@@ -1,7 +1,6 @@
 import { useDraggable } from '@dnd-kit/core';
-import React from 'react';
 
-import { Task } from '@/entities/task/models/task.types';
+import { ITask } from '@/entities/task/models/task.types';
 
 import { useTaskCard } from '../../models/useTaskCard';
 import {
@@ -15,7 +14,7 @@ import {
 import styles from './KanbanTaskCard.module.scss';
 
 interface KanbanTaskCardProps {
-  task: Task;
+  task: ITask;
 }
 
 const KanbanTaskCard: React.FC<KanbanTaskCardProps> = ({ task }) => {

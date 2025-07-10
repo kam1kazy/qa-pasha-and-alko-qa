@@ -1,8 +1,8 @@
-import { Task } from '@/entities/task/models/task.types';
+import { ITask } from '@/entities/task/models/task.types';
 import KanbanTaskCard from '@/entities/task/ui/TaskCard/KanbanTaskCard';
 
 interface KanbanTaskListProps {
-  tasks: Task[];
+  tasks: ITask[];
 }
 
 const KanbanTaskList: React.FC<KanbanTaskListProps> = ({ tasks }) => (

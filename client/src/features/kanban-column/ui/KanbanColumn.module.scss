@@ -1,0 +1,11 @@
+.columns {
+  background: #232329;
+  border-radius: 12;
+  padding: 16;
+  min-width: 320;
+  min-height: 400;
+  display: flex;
+  flex-direction: column;
+  gap: 12;
+  transition: border 0.2s ease;
+}

@@ -1,10 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { Task } from '@/entities/task/models/task.types';
+import { ITask } from '@/entities/task/models/task.types';
 import { initialColumns } from '@/features/kanban-tasks-list/config/taskList.mockData';
 
 interface TasksState {
-  tasks: Record<string, Task[]>;
+  tasks: Record<string, ITask[]>;
 }
 
 const initialState: TasksState = {
@@ -23,14 +23,14 @@ const tasksSlice = createSlice({
   reducers: {
     setTasks: (
       state,
-      action: PayloadAction<{ columnId: string; tasks: Task[] }>
+      action: PayloadAction<{ columnId: string; tasks: ITask[] }>
     ) => {
       const { columnId, tasks } = action.payload;
       state.tasks[columnId] = tasks;
     },
     addTask: (
       state,
-      action: PayloadAction<{ columnId: string; task: Task }>
+      action: PayloadAction<{ columnId: string; task: ITask }>
     ) => {
       const { columnId, task } = action.payload;
       if (!state.tasks[columnId]) {
@@ -54,7 +54,7 @@ const tasksSlice = createSlice({
       action: PayloadAction<{
         columnId: string;
         taskId: string;
-        updates: Partial<Task>;
+        updates: Partial<ITask>;
       }>
     ) => {
       const { columnId, taskId, updates } = action.payload;

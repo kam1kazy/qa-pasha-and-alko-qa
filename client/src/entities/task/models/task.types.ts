@@ -1,6 +1,6 @@
 export type KanbanDifficulty = 'easy' | 'medium' | 'hard';
 
-export interface Task {
+export interface ITask {
   id: string;
   title: string;
   description: string;
@@ -16,9 +16,9 @@ export interface Task {
   subtasksDone?: number;
 }
 
-export interface KanbanColumn {
+export interface IKanbanColumn {
   id: string;
   title: string;
-  tasks: Task[];
+  tasks: ITask[];
   doneCount?: number;
 }

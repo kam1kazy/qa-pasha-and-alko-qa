@@ -3,13 +3,10 @@ import { useDispatch } from 'react-redux';
 
 import { setColumns } from '@/entities/column/model/column.slice';
 import { moveTask } from '@/entities/task/models/task.slice';
-import {
-  KanbanColumn as KanbanColumnType,
-  Task,
-} from '@/entities/task/models/task.types';
+import { IKanbanColumn, ITask } from '@/entities/task/models/task.types';
 
 interface IProps {
-  columns: KanbanColumnType[];
+  columns: IKanbanColumn[];
 }
 
 export const useDragEnd = ({ columns }: IProps) => {
@@ -23,7 +20,7 @@ export const useDragEnd = ({ columns }: IProps) => {
 
     // Найти колонку и задачу, которую двигаем
     let fromColumnIdx = -1;
-    let task: Task | undefined;
+    let task: ITask | undefined;
     columns.forEach((col, idx) => {
       const found = col.tasks.find((t) => t.id === active.id);
       if (found) {
