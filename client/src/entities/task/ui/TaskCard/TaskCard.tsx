@@ -55,11 +55,9 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
       >
         <div className={styles.card__header}>
           <ProgressCircle progress={task.progress} />
-          <div style={{ flex: 1 }}>
-            <div className={styles.card__title}>{task.title}</div>
-            <div className={styles.card__description}>{task.description}</div>
-          </div>
+          <div className={styles.card__title}>{task.title}</div>
         </div>
+        <div className={styles.card__description}>{task.description}</div>
         <div className={styles.card__tags}>
           <DifficultyTag difficulty={task.difficulty} />
           <TopicTags topics={task.topics} />

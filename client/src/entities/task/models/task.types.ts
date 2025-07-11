@@ -1,10 +1,12 @@
 export type KanbanDifficulty = 'easy' | 'medium' | 'hard';
 
+export type columnsTypes = 'todo' | 'inprogress' | 'completed';
+
 export interface ITask {
   id: string;
   title: string;
   description: string;
-  columnId: number;
+  columnId: columnsTypes;
   progress?: number; // 0-100
   difficulty?: KanbanDifficulty;
   topics?: string[];
@@ -17,8 +19,6 @@ export interface ITask {
 }
 
 export interface IKanbanColumn {
-  id: string;
+  id: columnsTypes;
   title: string;
-  tasks: ITask[];
-  doneCount?: number;
 }

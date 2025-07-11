@@ -27,7 +27,8 @@ export const KanbanColumn: React.FC<KanbanColumnProps> = ({ column }) => {
       <KanbanColumnHeader
         title={column.title}
         count={tasks.length}
-        doneCount={column.doneCount}
+        // TODO: Вернуть
+        // doneCount={column.doneCount}
       />
       <KanbanTaskList tasks={tasks} />
       <KanbanAddTaskButton onAdd={onAddTask} />

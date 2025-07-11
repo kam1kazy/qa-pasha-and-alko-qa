@@ -1,16 +1,39 @@
 import type { DragEndEvent } from '@dnd-kit/core';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { setColumns } from '@/entities/column/model/column.slice';
+// import { setColumns } from '@/entities/column/model/column.slice';
 import { moveTask } from '@/entities/task/models/task.slice';
-import { IKanbanColumn, ITask } from '@/entities/task/models/task.types';
+import type { IKanbanColumn } from '@/entities/task/models/task.types';
+import type { RootState } from '@/shared/lib/redux/store';
 
 interface IProps {
   columns: IKanbanColumn[];
+  setDragInProgress?: (v: boolean) => void;
 }
 
-export const useDragEnd = ({ columns }: IProps) => {
+export const useDragEnd = ({ columns, setDragInProgress }: IProps) => {
   const dispatch = useDispatch();
+  // TODO: Селектор достаю не правильно, надо из либы
+  const tasksByColumn = useSelector((state: RootState) => state.tasks.tasks);
+
+  const findTask = (id: string) => {
+    for (let colIdx = 0; colIdx < columns.length; colIdx++) {
+      const columnId = columns[colIdx].id;
+      const taskList = tasksByColumn[columnId] || [];
+      const taskIdx = taskList.findIndex((t) => t.id === id);
+      if (taskIdx !== -1) {
+        return {
+          columnIndex: colIdx,
+          taskIndex: taskIdx,
+          task: taskList[taskIdx],
+        };
+      }
+    }
+    return null;
+  };
+
+  const findColumnIndex = (id: string) =>
+    columns.findIndex((col) => col.id === id);
 
   return (event: DragEndEvent) => {
     const { active, over } = event;
@@ -18,50 +41,51 @@ export const useDragEnd = ({ columns }: IProps) => {
       return;
     }
 
-    // Найти колонку и задачу, которую двигаем
-    let fromColumnIdx = -1;
-    let task: ITask | undefined;
-    columns.forEach((col, idx) => {
-      const found = col.tasks.find((t) => t.id === active.id);
-      if (found) {
-        fromColumnIdx = idx;
-        task = found;
+    const from = findTask(active.id as string);
+    if (!from) {
+      return;
+    }
+
+    // Попали ли в задачу?
+    const to = findTask(over.id as string);
+
+    let toColumnIdx: number;
+    let toTaskIdx: number;
+
+    if (to) {
+      toColumnIdx = to.columnIndex;
+      toTaskIdx = to.taskIndex;
+
+      // Двигаем вниз в ту же колонку → корректируем
+      if (from.columnIndex === toColumnIdx && from.taskIndex < toTaskIdx) {
+        toTaskIdx -= 1;
       }
-    });
-    if (!task) {
+    } else {
+      // Попали в колонку — дроп в конец
+      toColumnIdx = findColumnIndex(over.id as string);
+      if (toColumnIdx === -1) {
+        return;
+      }
+      const columnId = columns[toColumnIdx].id;
+      toTaskIdx = (tasksByColumn[columnId] || []).length;
+    }
+
+    // Не переместили
+    if (from.columnIndex === toColumnIdx && from.taskIndex === toTaskIdx) {
       return;
     }
 
-    // Найти колонку, куда бросили
-    const toColumnIdx = columns.findIndex((col) => col.id === over.id);
-    if (toColumnIdx === -1) {
-      return;
-    }
-
-    // Обновляем состояние в Redux
     dispatch(
       moveTask({
-        sourceColumnId: columns[fromColumnIdx].id,
+        sourceColumnId: columns[from.columnIndex].id,
         destinationColumnId: columns[toColumnIdx].id,
-        taskId: task.id,
-        newIndex: columns[toColumnIdx].tasks.length,
+        taskId: from.task.id,
+        newIndex: toTaskIdx,
       })
     );
 
-    // Обновляем колонки
-    const newColumns = columns.map((col, idx) => {
-      if (idx === fromColumnIdx) {
-        return { ...col, tasks: col.tasks.filter((t) => t.id !== active.id) };
-      }
-      if (idx === toColumnIdx) {
-        return {
-          ...col,
-          tasks: [...col.tasks, { ...task!, columnId: Number(col.id) }],
-        };
-      }
-      return col;
-    });
-
-    dispatch(setColumns(newColumns));
+    if (setDragInProgress) {
+      setTimeout(() => setDragInProgress(false), 100);
+    }
   };
 };
