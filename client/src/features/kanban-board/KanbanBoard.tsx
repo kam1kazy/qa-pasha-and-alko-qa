@@ -3,23 +3,18 @@
 import { useSelector } from 'react-redux';
 
 import { IKanbanColumn } from '@/entities/task/models/task.types';
-import { KanbanColumn } from '@/features/kanban-column/ui/KanbanColumn';
+import { KanbanColumn } from '@/features/kanban-column/KanbanColumn';
 import { RootState } from '@/shared/lib/redux/store';
 import { KanbanDndProvider } from '@/shared/providers/KanbanDndProvider';
+
+import styles from './KanbanBoard.module.scss';
 
 export const KanbanBoard: React.FC = () => {
   const columns = useSelector((state: RootState) => state.columns.columns);
 
   return (
     <KanbanDndProvider columns={columns}>
-      <div
-        style={{
-          display: 'flex',
-          gap: 24,
-          justifyContent: 'center',
-          width: '100%',
-        }}
-      >
+      <div className={styles.board}>
         {columns.map((column: IKanbanColumn) => (
           <KanbanColumn key={column.id} column={column} />
         ))}

@@ -1,16 +1,14 @@
-import { useDraggable } from '@dnd-kit/core';
+import { useSortable } from '@dnd-kit/sortable';
 
 import { ITask } from '@/entities/task/models/task.types';
 import { useTaskCard } from '@/entities/task/models/useTaskCard';
+import { TaskActions } from '@/entities/task/ui/TaskActions/TaskActions';
+import { DifficultyTag } from '@/shared/ui/DifficultyTag/DifficultyTag';
+import { IconText } from '@/shared/ui/IconText/IconText';
+import { ProgressCircle } from '@/shared/ui/ProgressCircle/ProgressCircle';
+import { SubtasksInfo } from '@/shared/ui/SubtasksInfo/SubtasksInfo';
+import { TopicTags } from '@/shared/ui/TopicTags/TopicTags';
 
-import {
-  DifficultyTag,
-  IconText,
-  ProgressCircle,
-  SubtasksInfo,
-  TaskActions,
-  TopicTags,
-} from '.';
 import styles from './TaskCard.module.scss';
 
 interface TaskCardProps {
@@ -24,16 +22,26 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
     // closeModal
   } = useTaskCard(task);
 
-  const { attributes, listeners, setNodeRef, transform } = useDraggable({
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+    isOver,
+  } = useSortable({
     id: task.id,
-    data: task,
   });
 
-  const style = transform
-    ? {
-        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-      }
-    : undefined;
+  const style = {
+    transform: transform
+      ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
+      : undefined,
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+    borderTop: isOver ? '2px solid #4f8cff' : undefined,
+  };
 
   return (
     <>
@@ -47,11 +55,9 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
       >
         <div className={styles.card__header}>
           <ProgressCircle progress={task.progress} />
-          <div style={{ flex: 1 }}>
-            <div className={styles.card__title}>{task.title}</div>
-            <div className={styles.card__description}>{task.description}</div>
-          </div>
+          <div className={styles.card__title}>{task.title}</div>
         </div>
+        <div className={styles.card__description}>{task.description}</div>
         <div className={styles.card__tags}>
           <DifficultyTag difficulty={task.difficulty} />
           <TopicTags topics={task.topics} />

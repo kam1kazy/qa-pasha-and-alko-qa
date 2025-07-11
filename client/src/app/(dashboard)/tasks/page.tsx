@@ -1,4 +1,4 @@
-import { KanbanBoard } from '@/features/kanban-board/ui/KanbanBoard';
+import { KanbanBoard } from '@/features/kanban-board/KanbanBoard';
 
 import styles from './page.module.scss';
 

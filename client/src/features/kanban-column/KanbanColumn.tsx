@@ -1,12 +1,12 @@
 import { useDroppable } from '@dnd-kit/core';
 
 import { IKanbanColumn } from '@/entities/task/models/task.types';
-import { KanbanAddTaskButton } from '@/features/add-task/ui/AddTaskButton';
+import { KanbanAddTaskButton } from '@/features/add-task/AddTaskButton';
 import { KanbanTaskList } from '@/features/kanban-tasks-list/TaskList';
 import { KanbanColumnHeader } from '@/shared/ui/ColumnHeader/ColumnHeader';
 
-import { useKanbanColumn } from '../model/useKanbanColumn';
 import styles from './KanbanColumn.module.scss';
+import { useKanbanColumn } from './model/useKanbanColumn';
 
 interface KanbanColumnProps {
   column: IKanbanColumn;
@@ -27,7 +27,8 @@ export const KanbanColumn: React.FC<KanbanColumnProps> = ({ column }) => {
       <KanbanColumnHeader
         title={column.title}
         count={tasks.length}
-        doneCount={column.doneCount}
+        // TODO: Вернуть
+        // doneCount={column.doneCount}
       />
       <KanbanTaskList tasks={tasks} />
       <KanbanAddTaskButton onAdd={onAddTask} />
