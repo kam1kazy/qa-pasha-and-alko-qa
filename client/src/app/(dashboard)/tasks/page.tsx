@@ -1,19 +1,10 @@
-import React from 'react';
+import { KanbanBoard } from '@/features/kanban-board/KanbanBoard';
 
-import KanbanBoard from '@/features/kanban-board/ui/KanbanBoard';
+import styles from './page.module.scss';
 
 const TasksPage: React.FC = () => {
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        background: '#18181c',
-        padding: '40px 0',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'flex-start',
-      }}
-    >
+    <div className={styles.task_page}>
       <KanbanBoard />
     </div>
   );

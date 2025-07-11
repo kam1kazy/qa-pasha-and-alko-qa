@@ -2,9 +2,9 @@
 
 import { useState } from 'react';
 
-import { Task } from '@/entities/task/models/task.types';
+import { ITask } from '@/entities/task/models/task.types';
 
-export const useTaskCard = (_task: Task) => {
+export const useTaskCard = (_task: ITask) => {
   const [isModalOpen, setModalOpen] = useState(false);
 
   const onClick = () => setModalOpen(true);

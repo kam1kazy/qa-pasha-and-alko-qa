@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 
-import columnsReducer from '../../../entities/column/model/column.slice';
-import tasksReducer from '../../../entities/task/models/task.slice';
+import columnsReducer from '@/entities/column/model/column.slice';
+import tasksReducer from '@/entities/task/models/task.slice';
 
 export const store = configureStore({
   reducer: {

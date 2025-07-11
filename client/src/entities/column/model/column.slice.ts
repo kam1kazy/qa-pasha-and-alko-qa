@@ -1,10 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { KanbanColumn } from '@/entities/task/models/task.types';
-import { initialColumns } from '@/features/kanban-tasks-list/config/taskList.mockData';
+import { IKanbanColumn } from '@/entities/task/models/task.types';
+import { initialColumns } from '@/features/kanban-column/config/columnsList.mockData';
 
 interface ColumnsState {
-  columns: KanbanColumn[];
+  columns: IKanbanColumn[];
 }
 
 const initialState: ColumnsState = {
@@ -15,10 +15,10 @@ const columnsSlice = createSlice({
   name: 'columns',
   initialState,
   reducers: {
-    setColumns: (state, action: PayloadAction<KanbanColumn[]>) => {
+    setColumns: (state, action: PayloadAction<IKanbanColumn[]>) => {
       state.columns = action.payload;
     },
-    addColumn: (state, action: PayloadAction<KanbanColumn>) => {
+    addColumn: (state, action: PayloadAction<IKanbanColumn>) => {
       state.columns.push(action.payload);
     },
     removeColumn: (state, action: PayloadAction<string>) => {
@@ -26,19 +26,8 @@ const columnsSlice = createSlice({
         (column) => column.id !== action.payload
       );
     },
-    updateColumn: (
-      state,
-      action: PayloadAction<{ id: string; updates: Partial<KanbanColumn> }>
-    ) => {
-      const { id, updates } = action.payload;
-      const column = state.columns.find((col) => col.id === id);
-      if (column) {
-        Object.assign(column, updates);
-      }
-    },
   },
 });
 
-export const { setColumns, addColumn, removeColumn, updateColumn } =
-  columnsSlice.actions;
+export const { setColumns, addColumn, removeColumn } = columnsSlice.actions;
 export default columnsSlice.reducer;

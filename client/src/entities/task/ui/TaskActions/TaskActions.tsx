@@ -1,9 +1,9 @@
-import { Task } from '@/entities/task/models/task.types';
+import { ITask } from '@/entities/task/models/task.types';
 
 import styles from './TaskActions.module.scss';
 
 interface TaskActionsProps {
-  task: Task;
+  task: ITask;
 }
 
 export const TaskActions: React.FC<TaskActionsProps> = () => {

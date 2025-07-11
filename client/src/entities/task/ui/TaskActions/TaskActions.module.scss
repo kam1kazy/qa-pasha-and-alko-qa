@@ -2,45 +2,45 @@
   color: #18181c;
   border-radius: 6;
   font-size: 12;
-  padding: '2px 8px';
+  padding: 2px 8px;
   font-weight: 500;
 }
 
 .icon_text {
-  display: 'inline-flex';
-  align-items: 'center';
+  display: inline-flex;
+  align-items: center;
   gap: 4;
   font-size: 13;
-  color: '#aaa';
+  color: #aaa;
   margin-right: 12;
 }
 
 .progress_circle {
-  transition: 'stroke-dashoffset 0.3s';
+  transition: stroke-dashoffset 0.3s;
 }
 
 .subtasks_info {
   font-size: 12;
   color: #aaa;
-  position: 'absolute';
+  position: absolute;
   right: 12;
   bottom: 8;
   background: #232329cc;
   border-radius: 6;
-  padding: '2px 8px';
+  padding: 2px 8px;
 }
 
 .task_actions {
   margin-top: 8;
-  display: 'flex';
+  display: flex;
   gap: 8;
 }
 
 .topic_tags {
-  background: '#34343c';
-  color: '#fff';
+  background: #34343c;
+  color: #fff;
   border-radius: 6;
   font-size: 12;
-  padding: '2px 8px';
+  padding: 2px 8px;
   margin-right: 4;
 }
