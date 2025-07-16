@@ -25,6 +25,9 @@ model Sprint {
   title     String
   tasks     Task[]
   activeUsers UserActiveSprint[]
+
+  createdAt DateTime            @default(now())
+  updatedAt DateTime
 }
 
 model UserActiveSprint {
@@ -60,6 +63,9 @@ model Task {
   attachments  Attachment[]
   comments     Comment[]
   taskStatuses UserTaskStatus[]
+
+  createdAt DateTime            @default(now())
+  updatedAt DateTime
 }
 
 model KanbanColumn {
@@ -88,7 +94,9 @@ model Comment {
   taskId  String
   user    User   @relation(fields: [userId], references: [id])
   userId  String
+
   createdAt DateTime @default(now())
+  updatedAt DateTime
 }
 
 model UserTaskStatus {
