@@ -1,21 +1,18 @@
-// ESM
-import Fastify from 'fastify';
+import { authRoutes } from '@/routes/index.js';
+import { json } from 'body-parser';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import express from 'express';
 
-const fastify = Fastify({
-  logger: true,
-});
+const app = express();
+dotenv.config();
 
-// Declare a route
-fastify.get('/', function (request, reply) {
-  reply.send({ hello: 'world' });
-});
+app.use(cors());
+app.use(json());
 
-// Run the server!
-fastify.listen({ port: 3000, host: '0.0.0.0' }, function (err, address) {
-  if (err) {
-    fastify.log.error(err);
-    process.exit(1);
-  }
-  // Server is now listening on ${address}
-  fastify.log.info(`server listening on ${address}`);
+app.get('/api/health', (_, res) => {
+  res.json({ status: 'ok' });
 });
+app.use('/api/auth', authRoutes);
+
+export default app;
