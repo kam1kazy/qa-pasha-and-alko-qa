@@ -16,9 +16,8 @@ export default function Home() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res: any = await login({ email, password });
+      const res = await login({ email, password }).unwrap();
       setToken(res.token);
-
       setTokenState(getToken()?.length ? true : false);
       // dispatch(setUser(user));
     } catch (error) {

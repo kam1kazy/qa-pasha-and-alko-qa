@@ -18,7 +18,7 @@ export const createUserTaskStatus = async (req: Request, res: Response) => {
     const data = createUserTaskStatusSchema.parse(req.body);
     const status = await service.create(data);
     res.status(201).json(status);
-  } catch (err: any) {
+  } catch (err: unknown) {
     res.status(400).json({ message: err.message });
   }
 };
@@ -49,7 +49,7 @@ export const updateUserTaskStatus = async (req: Request, res: Response) => {
     const data = updateUserTaskStatusSchema.parse(req.body);
     const status = await service.update(id, data);
     res.json(status);
-  } catch (err: any) {
+  } catch (err: unknown) {
     res.status(400).json({ message: err.message });
   }
 };
@@ -61,7 +61,7 @@ export const deleteUserTaskStatus = async (req: Request, res: Response) => {
     const { id } = req.params;
     await service.delete(id);
     res.status(204).send();
-  } catch (err: any) {
+  } catch (err: unknown) {
     res.status(400).json({ message: err.message });
   }
 };

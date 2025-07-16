@@ -1,10 +1,20 @@
 import { AsyncLocalStorage } from 'node:async_hooks';
 import crypto from 'node:crypto';
 
+import { NextFunction, Request, Response } from 'express';
 import fs from 'fs';
 import path from 'path';
 import { pino } from 'pino';
 import { pinoHttp } from 'pino-http';
+
+// Расширяем типы Express
+declare global {
+  namespace Express {
+    interface Request {
+      requestId?: string;
+    }
+  }
+}
 
 export const asyncStorage = new AsyncLocalStorage<Map<string, string>>();
 
@@ -45,12 +55,16 @@ export function getRequestId(): string {
 }
 
 // Middleware для установки requestId
-export const requestIdMiddleware = (req: any, res: any, next: any) => {
+export const requestIdMiddleware = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const id = crypto.randomUUID();
   const store = new Map<string, string>();
   store.set('request-id', id);
   asyncStorage.run(store, () => {
-    req.requestId = id; // Добавляем requestId в объект
+    req.requestId = id; // Теперь TypeScript знает об этом свойстве
     next();
   });
 };

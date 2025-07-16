@@ -11,7 +11,7 @@ export const register = async (req: Request, res: Response) => {
     const token = await service.register(email, password);
     res.json({ token });
     //TODO: Разрешить any
-  } catch (err: any) {
+  } catch (err: unknown) {
     res.status(err.statusCode || 400).json({ message: err.message });
   }
 };
@@ -22,7 +22,7 @@ export const login = async (req: Request, res: Response) => {
     const token = await service.login(email, password);
     res.json({ token });
     //TODO: Разрешить any
-  } catch (err: any) {
+  } catch (err: unknown) {
     res.status(err.statusCode).json({ message: err.message });
   }
 };

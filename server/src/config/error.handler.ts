@@ -4,7 +4,7 @@ import { ZodError } from 'zod';
 import { getLoggerWithRequestId } from './logger.js';
 
 export function errorHandler(
-  err: any,
+  err: Error,
   req: Request,
   res: Response,
   _next: NextFunction
@@ -16,7 +16,7 @@ export function errorHandler(
     return res.status(400).json({ error: err.flatten() });
   }
 
-  const status = err.status || 500;
+  const status = (err as any).status || 500;
   const message = status === 500 ? 'Internal Server Error' : err.message;
 
   return res.status(status).json({ error: message });
