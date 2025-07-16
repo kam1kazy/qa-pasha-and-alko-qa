@@ -23,6 +23,6 @@ export const login = async (req: Request, res: Response) => {
     res.json({ token });
     //TODO: Разрешить any
   } catch (err: any) {
-    res.status(err.statusCode || 400).json({ message: err.message });
+    res.status(err.statusCode).json({ message: err.message });
   }
 };

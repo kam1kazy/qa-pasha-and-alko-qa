@@ -10,7 +10,7 @@ import {
 const router = Router();
 
 router.post('/', createUserTaskStatus);
-router.get('/', getAllUserTaskStatuses);
+router.get('/list', getAllUserTaskStatuses);
 router.get('/:id', getUserTaskStatusById);
 router.put('/:id', updateUserTaskStatus);
 router.delete('/:id', deleteUserTaskStatus);

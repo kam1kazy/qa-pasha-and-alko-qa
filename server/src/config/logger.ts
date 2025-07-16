@@ -29,6 +29,7 @@ const baseLogger = pino(
           options: {
             colorize: true,
             translateTime: 'SYS:standard',
+            ignore: 'pid,hostname',
           },
         },
   },
@@ -43,21 +44,28 @@ export function getRequestId(): string {
   return store?.get('request-id') || 'unknown';
 }
 
-// Middleware для Express
+// Middleware для установки requestId
+export const requestIdMiddleware = (req: any, res: any, next: any) => {
+  const id = crypto.randomUUID();
+  const store = new Map<string, string>();
+  store.set('request-id', id);
+  asyncStorage.run(store, () => {
+    req.requestId = id; // Добавляем requestId в объект
+    next();
+  });
+};
+
+// Middleware для pino-http
 export const httpLogger = pinoHttp({
   logger: baseLogger,
-  customProps: (req) => {
-    const id = crypto.randomUUID();
-    const store = new Map<string, string>();
-    store.set('request-id', id);
-    asyncStorage.run(store, () => {});
-    return { 'request-id': id, route: req.url };
-  },
+  customProps: (req) => ({
+    'request-id': (req as any).requestId || 'unknown',
+    route: req.url,
+  }),
 });
 
 // обёртка над логгером
 export function getLoggerWithRequestId() {
   const requestId = getRequestId();
-
   return logger.child({ requestId });
 }

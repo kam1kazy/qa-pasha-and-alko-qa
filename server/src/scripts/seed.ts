@@ -1,52 +1,16 @@
 import { prismaService } from './db.js';
-import * as fs from 'fs';
-import * as path from 'path';
 
-const usersPath = path.resolve(__dirname, '../../bot-data/data/users.json');
-const coursesPath = path.resolve(__dirname, '../../bot-data/data/courses.json');
-const sprintsPath = path.resolve(__dirname, '../../bot-data/data/sprints.json');
-const kanbanColumnsPath = path.resolve(
-  __dirname,
-  '../../bot-data/data/kanbanColumns.json'
-);
-const tasksPath = path.resolve(__dirname, '../../bot-data/data/tasks.json');
-const userActiveSprintsPath = path.resolve(
-  __dirname,
-  '../../bot-data/data/userActiveSprints.json'
-);
-const userTaskStatusesPath = path.resolve(
-  __dirname,
-  '../../bot-data/data/userTaskStatuses.json'
-);
-
-const users = require(usersPath);
-const courses = require(coursesPath);
-const sprints = require(sprintsPath);
-const kanbanColumns = require(kanbanColumnsPath);
-const tasks = require(tasksPath);
-const userActiveSprints = require(userActiveSprintsPath);
-const userTaskStatuses = require(userTaskStatusesPath);
+import courses from './configs/courses.json' with { type: 'json' };
+import kanbanColumns from './configs/kanbanColumns.json' with { type: 'json' };
+import sprints from './configs/sprints.json' with { type: 'json' };
+import tasks from './configs/tasks.json' with { type: 'json' };
+import userActiveSprints from './configs/userActiveSprints.json' with { type: 'json' };
+import users from './configs/users.json' with { type: 'json' };
+import userTaskStatuses from './configs/userTaskStatuses.json' with { type: 'json' };
 
 const seed = async () => {
   console.log(`\nPRISMA: 🌾 Выполняем посев данных...`);
 
-  // Проверяем существование файлов
-  const files = [
-    { path: usersPath, name: 'users' },
-    { path: coursesPath, name: 'courses' },
-    { path: sprintsPath, name: 'sprints' },
-    { path: kanbanColumnsPath, name: 'kanbanColumns' },
-    { path: tasksPath, name: 'tasks' },
-    { path: userActiveSprintsPath, name: 'userActiveSprints' },
-    { path: userTaskStatusesPath, name: 'userTaskStatuses' },
-  ];
-
-  for (const file of files) {
-    if (!fs.existsSync(file.path)) {
-      console.log(`PRISMA: ⚠️ Файл с данными ${file.name} не найден`);
-      return;
-    }
-  }
 
   // Очистка базы данных
   await prismaService.clearDatabase();
@@ -77,5 +41,13 @@ const seed = async () => {
 
   console.log('PRISMA: 🎉 Посев данных успешно завершен!');
 };
+
+seed()
+  .then(() => {
+    console.log('Посев завершен успешно');
+  })
+  .catch((error) => {
+    console.error('Ошибка при посеве:', error);
+  });
 
 export default seed;

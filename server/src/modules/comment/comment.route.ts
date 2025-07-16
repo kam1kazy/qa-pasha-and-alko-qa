@@ -10,7 +10,7 @@ import {
 const router = Router();
 
 router.post('/', createComment);
-router.get('/', getAllComments);
+router.get('/list', getAllComments);
 router.get('/:id', getCommentById);
 router.put('/:id', updateComment);
 router.delete('/:id', deleteComment);

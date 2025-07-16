@@ -10,7 +10,7 @@ import {
 const router = Router();
 
 router.post('/', createSprint);
-router.get('/', getAllSprints);
+router.get('/list', getAllSprints);
 router.get('/:id', getSprintById);
 router.put('/:id', updateSprint);
 router.delete('/:id', deleteSprint);

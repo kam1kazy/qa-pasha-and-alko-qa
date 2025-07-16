@@ -25,7 +25,7 @@ model Course {
   title     String
   sprints   Sprint[] @relation("CourseSprints") // Явно именуем отношение
   createdAt DateTime @default(now())
-  updatedAt DateTime
+  updatedAt DateTime @updatedAt
 }
 
 model Sprint {
@@ -74,7 +74,7 @@ model Task {
   taskStatuses UserTaskStatus[]
 
   createdAt DateTime @default(now())
-  updatedAt DateTime
+  updatedAt DateTime @updatedAt
 }
 
 model KanbanColumn {
@@ -105,7 +105,7 @@ model Comment {
   userId String
 
   createdAt DateTime @default(now())
-  updatedAt DateTime
+  updatedAt DateTime @updatedAt
 }
 
 model UserTaskStatus {

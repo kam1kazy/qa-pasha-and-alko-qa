@@ -1,4 +1,5 @@
 import { prisma } from '@/infrastructure/prisma/client.js';
+import { hash } from 'bcrypt';
 
 export class PrismaService {
   private prisma: typeof prisma;
@@ -32,6 +33,13 @@ export class PrismaService {
   // Загрузка пользователей
   async loadUsers(users: any[]) {
     try {
+      for (const user of users) {
+        // если пароль уже захеширован — пропусти
+        if (!user.password.startsWith('$2b$')) {
+          user.password = await hash(user.password, 10);
+        }
+      }
+
       console.log(`PRISMA: 📝 Начало загрузки ${users.length} пользователей`);
       await this.prisma.user.createMany({
         data: users,
