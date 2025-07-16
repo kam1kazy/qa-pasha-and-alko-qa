@@ -1,7 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { columnsTypes, ITask } from '@/entities/task/models/task.types';
+import type { ITask } from '@/entities/task/models/task.types';
 import { initialTasks } from '@/features/kanban-tasks-list/config/taskList.mockData';
+import type { ColumnsTypes } from '@/shared/types';
 
 interface TasksState {
   tasks: Record<string, ITask[]>;
@@ -72,7 +73,7 @@ const tasksSlice = createSlice({
       state,
       action: PayloadAction<{
         sourceColumnId: string;
-        destinationColumnId: columnsTypes;
+        destinationColumnId: ColumnsTypes;
         taskId: string;
         newIndex: number;
       }>
