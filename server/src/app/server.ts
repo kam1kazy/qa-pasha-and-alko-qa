@@ -1,11 +1,7 @@
-import cookieParser from 'cookie-parser';
-import express from 'express';
-import rateLimit from 'express-rate-limit';
-
 import { corsMiddleware } from '@/config/cors.js';
 import { errorHandler } from '@/config/error.handler.js';
 import { helmetMiddleware } from '@/config/helmet.js';
-import { getLoggerWithRequestId, httpLogger } from '@/config/logger.js';
+import { httpLogger, requestIdMiddleware } from '@/config/logger.js';
 import attachmentRoutes from '@/modules/attachment/attachment.route.js';
 import authRoutes from '@/modules/auth/auth.route.js';
 import commentRoutes from '@/modules/comment/comment.route.js';
@@ -14,16 +10,21 @@ import sprintRoutes from '@/modules/sprint/sprint.route.js';
 import taskRoutes from '@/modules/task/task.route.js';
 import userActiveSprintRoutes from '@/modules/userActiveSprint/userActiveSprint.route.js';
 import userTaskStatusRoutes from '@/modules/userTaskStatus/userTaskStatus.route.js';
+import cookieParser from 'cookie-parser';
+import express from 'express';
+import rateLimit from 'express-rate-limit';
+import fs from 'fs';
+import yaml from 'js-yaml';
+import swaggerUi from 'swagger-ui-express';
+
+const swaggerSpec = yaml.load(
+  fs.readFileSync(new URL('../../swagger.yaml', import.meta.url), 'utf8')
+) as object;
 
 const app = express();
 
+app.use(requestIdMiddleware);
 app.use(httpLogger);
-
-app.use((req, res, next) => {
-  const log = getLoggerWithRequestId();
-  log.info({ message: 'Обрабатываем запрос' });
-  next();
-});
 
 // --- Middleware
 app.use(express.json());
@@ -54,6 +55,7 @@ app.use('/columns', kanbanColumnRoutes);
 app.use('/attachments', attachmentRoutes);
 app.use('/user-task-statuses', userTaskStatusRoutes);
 app.use('/user-active-sprints', userActiveSprintRoutes);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use(errorHandler);
 
