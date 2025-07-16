@@ -1,16 +1,22 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
+    "rootDir": ".",
+    "outDir": "build",
     "target": "esnext",
     "module": "nodenext",
-    "rootDir": ".",
     "moduleResolution": "nodenext",
-    "resolveJsonModule": true,
-    "outDir": "build",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
     "noImplicitAny": true,
-    "skipLibCheck": true
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    }
   },
   "include": [
     "src"

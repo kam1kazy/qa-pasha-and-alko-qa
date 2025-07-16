@@ -8,21 +8,38 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
-    "dev": "export NODE_ENV=development TS_NODE_BASEURL=./dist && concurrently -k -p \"[{name}]\" -n \"TypeScript,App\" -c \"yellow.bold,cyan.bold\" \"tsc -w\" \"nodemon\""
+    "dev": "nodemon",
+    "start": "node build/index.js"
   },
   "dependencies": {
     "@prisma/client": "^6.9.0",
+    "@sentry/node": "^9.39.0",
+    "@sentry/tracing": "^7.120.3",
+    "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.0",
     "express": "^5.1.0",
-    "jose": "^6.0.11"
+    "express-rate-limit": "^7.5.1",
+    "helmet": "^8.1.0",
+    "jose": "^6.0.11",
+    "pino": "^9.7.0",
+    "pino-http": "^10.5.0",
+    "pino-pretty": "^13.0.0",
+    "zod": "^4.0.5"
   },
   "devDependencies": {
+    "@sentry/types": "^9.39.0",
+    "@types/bcrypt": "^5.0.2",
+    "@types/cookie-parser": "^1.4.9",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
     "@types/node": "^24.0.1",
-    "concurrently": "^9.1.2",
+    "@types/pino": "^7.0.4",
+    "@types/pino-http": "^5.8.4",
     "nodemon": "^3.1.10",
-    "ts-node": "^10.9.2",
-    "tsconfig-paths": "^4.2.0",
+    "tsx": "^4.20.3",
     "typescript": "^5.8.3"
   }
 }

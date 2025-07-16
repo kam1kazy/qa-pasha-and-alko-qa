@@ -1,0 +1,268 @@
+[
+  {
+    "id": "task1",
+    "title": "Задача 1: Изучить основы синтаксиса",
+    "description": "Прочитать документацию по синтаксису языка",
+    "columnId": "column1",
+    "sprintId": "sprint1",
+    "progress": 0,
+    "difficulty": "EASY",
+    "topics": [
+      "программирование",
+      "синтаксис"
+    ],
+    "dueDate": "2025-07-23T09:00:00Z",
+    "done": false,
+    "subtasksCount": 2,
+    "subtasksDone": 0,
+    "createdAt": "2025-07-16T09:00:00Z",
+    "updatedAt": "2025-07-16T09:00:00Z"
+  },
+  {
+    "id": "task2",
+    "title": "Задача 2: Написать первую программу",
+    "description": "Создать простую программу 'Hello World'",
+    "columnId": "column1",
+    "sprintId": "sprint1",
+    "progress": 0,
+    "difficulty": "EASY",
+    "topics": [
+      "программирование",
+      "практика"
+    ],
+    "dueDate": "2025-07-23T09:00:00Z",
+    "done": false,
+    "subtasksCount": 1,
+    "subtasksDone": 0,
+    "createdAt": "2025-07-16T09:00:00Z",
+    "updatedAt": "2025-07-16T09:00:00Z"
+  },
+  {
+    "id": "task3",
+    "title": "Задача 3: Работа с переменными",
+    "description": "Создать программу с использованием переменных",
+    "columnId": "column1",
+    "sprintId": "sprint1",
+    "progress": 0,
+    "difficulty": "MEDIUM",
+    "topics": [
+      "переменные",
+      "программирование"
+    ],
+    "dueDate": "2025-07-23T09:00:00Z",
+    "done": false,
+    "subtasksCount": 3,
+    "subtasksDone": 0,
+    "createdAt": "2025-07-16T09:00:00Z",
+    "updatedAt": "2025-07-16T09:00:00Z"
+  },
+  {
+    "id": "task4",
+    "title": "Задача 4: Условные операторы",
+    "description": "Написать программу с использованием if-else",
+    "columnId": "column1",
+    "sprintId": "sprint1",
+    "progress": 0,
+    "difficulty": "MEDIUM",
+    "topics": [
+      "условия",
+      "программирование"
+    ],
+    "dueDate": "2025-07-23T09:00:00Z",
+    "done": false,
+    "subtasksCount": 2,
+    "subtasksDone": 0,
+    "createdAt": "2025-07-16T09:00:00Z",
+    "updatedAt": "2025-07-16T09:00:00Z"
+  },
+  {
+    "id": "task5",
+    "title": "Задача 5: Циклы",
+    "description": "Написать программу с использованием циклов",
+    "columnId": "column1",
+    "sprintId": "sprint2",
+    "progress": 0,
+    "difficulty": "MEDIUM",
+    "topics": [
+      "циклы",
+      "программирование"
+    ],
+    "dueDate": "2025-07-30T09:00:00Z",
+    "done": false,
+    "subtasksCount": 2,
+    "subtasksDone": 0,
+    "createdAt": "2025-07-16T09:00:00Z",
+    "updatedAt": "2025-07-16T09:00:00Z"
+  },
+  {
+    "id": "task6",
+    "title": "Задача 6: Функции",
+    "description": "Создать программу с функциями",
+    "columnId": "column1",
+    "sprintId": "sprint2",
+    "progress": 0,
+    "difficulty": "MEDIUM",
+    "topics": [
+      "функции",
+      "программирование"
+    ],
+    "dueDate": "2025-07-30T09:00:00Z",
+    "done": false,
+    "subtasksCount": 2,
+    "subtasksDone": 0,
+    "createdAt": "2025-07-16T09:00:00Z",
+    "updatedAt": "2025-07-16T09:00:00Z"
+  },
+  {
+    "id": "task7",
+    "title": "Задача 7: Массивы",
+    "description": "Работа с массивами в программе",
+    "columnId": "column1",
+    "sprintId": "sprint2",
+    "progress": 0,
+    "difficulty": "HARD",
+    "topics": [
+      "массивы",
+      "программирование"
+    ],
+    "dueDate": "2025-07-30T09:00:00Z",
+    "done": false,
+    "subtasksCount": 3,
+    "subtasksDone": 0,
+    "createdAt": "2025-07-16T09:00:00Z",
+    "updatedAt": "2025-07-16T09:00:00Z"
+  },
+  {
+    "id": "task8",
+    "title": "Задача 8: Обработка ошибок",
+    "description": "Добавить обработку ошибок в программу",
+    "columnId": "column1",
+    "sprintId": "sprint2",
+    "progress": 0,
+    "difficulty": "HARD",
+    "topics": [
+      "ошибки",
+      "программирование"
+    ],
+    "dueDate": "2025-07-30T09:00:00Z",
+    "done": false,
+    "subtasksCount": 2,
+    "subtasksDone": 0,
+    "createdAt": "2025-07-16T09:00:00Z",
+    "updatedAt": "2025-07-16T09:00:00Z"
+  },
+  {
+    "id": "task9",
+    "title": "Задача 9: Работа с объектами",
+    "description": "Создать программу с объектами",
+    "columnId": "column1",
+    "sprintId": "sprint3",
+    "progress": 0,
+    "difficulty": "MEDIUM",
+    "topics": [
+      "объекты",
+      "программирование"
+    ],
+    "dueDate": "2025-08-06T09:00:00Z",
+    "done": false,
+    "subtasksCount": 2,
+    "subtasksDone": 0,
+    "createdAt": "2025-07-16T09:00:00Z",
+    "updatedAt": "2025-07-16T09:00:00Z"
+  },
+  {
+    "id": "task10",
+    "title": "Задача 10: Модули",
+    "description": "Использовать модули в программе",
+    "columnId": "column1",
+    "sprintId": "sprint3",
+    "progress": 0,
+    "difficulty": "HARD",
+    "topics": [
+      "модули",
+      "программирование"
+    ],
+    "dueDate": "2025-08-06T09:00:00Z",
+    "done": false,
+    "subtasksCount": 2,
+    "subtasksDone": 0,
+    "createdAt": "2025-07-16T09:00:00Z",
+    "updatedAt": "2025-07-16T09:00:00Z"
+  },
+  {
+    "id": "task11",
+    "title": "Задача 11: Асинхронность",
+    "description": "Работа с асинхронным кодом",
+    "columnId": "column1",
+    "sprintId": "sprint3",
+    "progress": 0,
+    "difficulty": "HARD",
+    "topics": [
+      "асинхронность",
+      "программирование"
+    ],
+    "dueDate": "2025-08-06T09:00:00Z",
+    "done": false,
+    "subtasksCount": 3,
+    "subtasksDone": 0,
+    "createdAt": "2025-07-16T09:00:00Z",
+    "updatedAt": "2025-07-16T09:00:00Z"
+  },
+  {
+    "id": "task12",
+    "title": "Задача 12: Финальный проект",
+    "description": "Создать итоговый проект",
+    "columnId": "column1",
+    "sprintId": "sprint4",
+    "progress": 0,
+    "difficulty": "HARD",
+    "topics": [
+      "проект",
+      "программирование"
+    ],
+    "dueDate": "2025-08-13T09:00:00Z",
+    "done": false,
+    "subtasksCount": 4,
+    "subtasksDone": 0,
+    "createdAt": "2025-07-16T09:00:00Z",
+    "updatedAt": "2025-07-16T09:00:00Z"
+  },
+  {
+    "id": "task13",
+    "title": "Задача 13: Тестирование",
+    "description": "Написать тесты для проекта",
+    "columnId": "column1",
+    "sprintId": "sprint4",
+    "progress": 0,
+    "difficulty": "HARD",
+    "topics": [
+      "тесты",
+      "программирование"
+    ],
+    "dueDate": "2025-08-13T09:00:00Z",
+    "done": false,
+    "subtasksCount": 2,
+    "subtasksDone": 0,
+    "createdAt": "2025-07-16T09:00:00Z",
+    "updatedAt": "2025-07-16T09:00:00Z"
+  },
+  {
+    "id": "task14",
+    "title": "Задача 14: Документация",
+    "description": "Создать документацию для проекта",
+    "columnId": "column1",
+    "sprintId": "sprint4",
+    "progress": 0,
+    "difficulty": "MEDIUM",
+    "topics": [
+      "документация",
+      "программирование"
+    ],
+    "dueDate": "2025-08-13T09:00:00Z",
+    "done": false,
+    "subtasksCount": 2,
+    "subtasksDone": 0,
+    "createdAt": "2025-07-16T09:00:00Z",
+    "updatedAt": "2025-07-16T09:00:00Z"
+  }
+]

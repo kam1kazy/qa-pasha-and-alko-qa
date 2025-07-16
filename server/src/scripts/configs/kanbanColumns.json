@@ -1,0 +1,14 @@
+[
+  {
+    "id": "column1",
+    "title": "To Do"
+  },
+  {
+    "id": "column2",
+    "title": "In Progress"
+  },
+  {
+    "id": "column3",
+    "title": "Done"
+  }
+]
