@@ -1,23 +1,40 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import { useAuth } from '@/shared/lib/auth/useAuth';
 
 export function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuth } = useAuth();
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (!isAuth) {
-      router.replace('/'); // редирект на главную
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (!isLoading && !isAuth) {
+      router.replace('/');
     }
-  }, [isAuth, router]);
+  }, [isAuth, isLoading, router]);
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-white">Загрузка...</div>
+      </div>
+    );
+  }
 
   if (!isAuth) {
     return null;
-  } // или лоадер
+  }
 
   return <>{children}</>;
 }
