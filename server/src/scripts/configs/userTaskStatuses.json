@@ -1,0 +1,26 @@
+[
+  {
+    "id": "uts1",
+    "userId": "user2",
+    "taskId": "task1",
+    "status": "TODO"
+  },
+  {
+    "id": "uts2",
+    "userId": "user2",
+    "taskId": "task2",
+    "status": "TODO"
+  },
+  {
+    "id": "uts3",
+    "userId": "user2",
+    "taskId": "task3",
+    "status": "TODO"
+  },
+  {
+    "id": "uts4",
+    "userId": "user2",
+    "taskId": "task4",
+    "status": "TODO"
+  }
+]

@@ -1,0 +1,30 @@
+[
+  {
+    "id": "sprint1",
+    "title": "Спринт 1: Введение",
+    "courseId": "course1",
+    "createdAt": "2025-07-16T09:00:00Z",
+    "updatedAt": "2025-07-16T09:00:00Z"
+  },
+  {
+    "id": "sprint2",
+    "title": "Спринт 2: Основы",
+    "courseId": "course1",
+    "createdAt": "2025-07-16T09:00:00Z",
+    "updatedAt": "2025-07-16T09:00:00Z"
+  },
+  {
+    "id": "sprint3",
+    "title": "Спринт 3: Практика",
+    "courseId": "course1",
+    "createdAt": "2025-07-16T09:00:00Z",
+    "updatedAt": "2025-07-16T09:00:00Z"
+  },
+  {
+    "id": "sprint4",
+    "title": "Спринт 4: Закрепление",
+    "courseId": "course1",
+    "createdAt": "2025-07-16T09:00:00Z",
+    "updatedAt": "2025-07-16T09:00:00Z"
+  }
+]

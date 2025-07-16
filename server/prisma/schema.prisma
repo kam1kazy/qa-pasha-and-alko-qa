@@ -8,63 +8,72 @@ datasource db {
 }
 
 model User {
-  id        String              @id @default(uuid())
-  name      String
-  email     String              @unique
-  password  String
-  comments  Comment[]
-  taskStatuses UserTaskStatus[]
-  activeSprints UserActiveSprint[]
-  createdAt DateTime            @default(now())
-  updatedAt DateTime
+  id             String             @id @default(uuid())
+  name           String
+  email          String             @unique
+  password       String
+  comments       Comment[]
+  taskStatuses   UserTaskStatus[]
+  activeSprints  UserActiveSprint[]
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime
   changePassword DateTime
 }
 
-model Sprint {
-  id        String     @id @default(uuid())
+model Course {
+  id        String   @id @default(uuid())
   title     String
-  tasks     Task[]
-  activeUsers UserActiveSprint[]
-
-  createdAt DateTime            @default(now())
+  sprints   Sprint[] @relation("CourseSprints") // Явно именуем отношение
+  createdAt DateTime @default(now())
   updatedAt DateTime
 }
 
+model Sprint {
+  id          String             @id @default(uuid())
+  title       String
+  course      Course             @relation("CourseSprints", fields: [courseId], references: [id]) // Обратное отношение
+  courseId    String
+  tasks       Task[]
+  activeUsers UserActiveSprint[]
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime
+}
+
 model UserActiveSprint {
-  id        String   @id @default(uuid())
-  user      User     @relation(fields: [userId], references: [id])
-  sprint    Sprint   @relation(fields: [sprintId], references: [id])
-  userId    String
-  sprintId  String
+  id       String @id @default(uuid())
+  user     User   @relation(fields: [userId], references: [id])
+  sprint   Sprint @relation(fields: [sprintId], references: [id])
+  userId   String
+  sprintId String
 
   @@unique([userId, sprintId]) // 1 пользователь — 1 активный спринт
 }
 
 model Task {
-  id          String     @id @default(uuid())
+  id          String       @id @default(uuid())
   title       String
   description String
   column      KanbanColumn @relation(fields: [columnId], references: [id])
   columnId    String
 
-  sprint      Sprint     @relation(fields: [sprintId], references: [id])
-  sprintId    String
+  sprint   Sprint @relation(fields: [sprintId], references: [id])
+  sprintId String
 
-  progress    Int        @default(0) // 0-100
-  difficulty  KanbanDifficulty
-  topics      String[]   // строковые темы
+  progress   Int              @default(0) // 0-100
+  difficulty KanbanDifficulty
+  topics     String[] // строковые темы
 
-  dueDate     DateTime?  // дедлайн
-  done        Boolean    @default(false)
+  dueDate DateTime? // дедлайн
+  done    Boolean   @default(false)
 
-  subtasksCount Int?     // общее число подзадач
-  subtasksDone  Int?     // выполнено подзадач
+  subtasksCount Int? // общее число подзадач
+  subtasksDone  Int? // выполнено подзадач
 
   attachments  Attachment[]
   comments     Comment[]
   taskStatuses UserTaskStatus[]
 
-  createdAt DateTime            @default(now())
+  createdAt DateTime @default(now())
   updatedAt DateTime
 }
 
@@ -88,24 +97,24 @@ model Attachment {
 }
 
 model Comment {
-  id      String @id @default(uuid())
-  text    String
-  task    Task   @relation(fields: [taskId], references: [id])
-  taskId  String
-  user    User   @relation(fields: [userId], references: [id])
-  userId  String
+  id     String @id @default(uuid())
+  text   String
+  task   Task   @relation(fields: [taskId], references: [id])
+  taskId String
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
 
   createdAt DateTime @default(now())
   updatedAt DateTime
 }
 
 model UserTaskStatus {
-  id        String   @id @default(uuid())
-  user      User     @relation(fields: [userId], references: [id])
-  task      Task     @relation(fields: [taskId], references: [id])
-  userId    String
-  taskId    String
-  status    TaskStatus
+  id     String     @id @default(uuid())
+  user   User       @relation(fields: [userId], references: [id])
+  task   Task       @relation(fields: [taskId], references: [id])
+  userId String
+  taskId String
+  status TaskStatus
 
   @@unique([userId, taskId]) // Уникальный статус на пару user-task
 }
