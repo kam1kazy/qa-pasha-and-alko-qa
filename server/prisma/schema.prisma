@@ -15,6 +15,9 @@ model User {
   comments  Comment[]
   taskStatuses UserTaskStatus[]
   activeSprints UserActiveSprint[]
+  createdAt DateTime            @default(now())
+  updatedAt DateTime
+  changePassword DateTime
 }
 
 model Sprint {
