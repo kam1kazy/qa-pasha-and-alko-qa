@@ -7,11 +7,11 @@ export class CommentService {
   }
 
   async getAll() {
-    return prisma.comment.findMany();
+    return prisma.comment.findMany({ where: { deletedAt: null } });
   }
 
   async getById(id: string) {
-    return prisma.comment.findUnique({ where: { id } });
+    return prisma.comment.findFirst({ where: { id, deletedAt: null } });
   }
 
   async update(id: string, data: UpdateCommentDto) {
@@ -19,6 +19,10 @@ export class CommentService {
   }
 
   async delete(id: string) {
-    return prisma.comment.delete({ where: { id } });
+    // Soft-delete
+    return prisma.comment.update({
+      where: { id },
+      data: { deletedAt: new Date() },
+    });
   }
 }
