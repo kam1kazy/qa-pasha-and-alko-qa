@@ -15,6 +15,8 @@ model User {
   comments       Comment[]
   taskStatuses   UserTaskStatus[]
   activeSprints  UserActiveSprint[]
+  refreshTokens  RefreshToken[]
+  loginAttempts  LoginAttempt[]
   createdAt      DateTime           @default(now())
   updatedAt      DateTime
   changePassword DateTime
@@ -117,6 +119,28 @@ model UserTaskStatus {
   status TaskStatus
 
   @@unique([userId, taskId]) // Уникальный статус на пару user-task
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  isRevoked Boolean  @default(false)
+  userAgent String?  // User-Agent для дополнительной защиты
+  ipAddress String?  // IP адрес для дополнительной защиты
+}
+
+model LoginAttempt {
+  id        String   @id @default(uuid())
+  email     String
+  ipAddress String
+  success   Boolean
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
 }
 
 enum TaskStatus {

@@ -1,39 +1,57 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { getToken } from './token';
+import {
+  useLogoutMutation,
+  useRefreshMutation,
+} from '@/entities/user/api/userApi';
+import { logout, setAccessToken } from '@/entities/user/models/auth.slice';
+import { RootState } from '@/shared/lib/redux/store';
 
 export function useAuth() {
-  const [isAuth, setIsAuth] = useState(false);
+  const dispatch = useDispatch();
+  const { accessToken, isAuthenticated, user } = useSelector(
+    (state: RootState) => state.auth
+  );
+  const [refresh] = useRefreshMutation();
+  const [logoutApi] = useLogoutMutation();
 
-  const checkAuth = () => {
-    const token = getToken();
-    setIsAuth(token ? true : false);
+  const handleLogout = async () => {
+    try {
+      await logoutApi().unwrap();
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      dispatch(logout());
+    }
   };
 
+  const refreshToken = async () => {
+    try {
+      const result = await refresh().unwrap();
+      dispatch(setAccessToken(result.accessToken));
+      return true;
+    } catch (error) {
+      console.error('Refresh token error:', error);
+      dispatch(logout());
+      return false;
+    }
+  };
+
+  // Автоматический refresh при инициализации приложения
   useEffect(() => {
-    // Проверяем токен при монтировании
-    checkAuth();
-
-    // Слушаем изменения в localStorage
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'token') {
-        checkAuth();
-      }
-    };
-
-    // Слушаем события изменения localStorage (для других вкладок)
-    window.addEventListener('storage', handleStorageChange);
-
-    // Периодически проверяем токен (каждые 5 секунд)
-    const interval = setInterval(checkAuth, 5000);
-
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-      clearInterval(interval);
-    };
+    if (!accessToken && isAuthenticated) {
+      refreshToken();
+    }
   }, []);
 
-  return { isAuth };
+  return {
+    accessToken,
+    isAuthenticated,
+    user,
+    logout: handleLogout,
+    refreshToken,
+  };
 }

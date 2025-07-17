@@ -1,9 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { useLoginMutation } from '@/entities/user/api/userApi';
-import { setToken } from '@/shared/lib/auth/token';
+import { setAccessToken } from '@/entities/user/models/auth.slice';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -13,6 +14,7 @@ interface AuthModalProps {
 export function AuthModal({ isOpen, onClose }: AuthModalProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const dispatch = useDispatch();
 
   const [login, { isLoading, error }] = useLoginMutation();
 
@@ -20,14 +22,11 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
     e.preventDefault();
     try {
       const res = await login({ email, password }).unwrap();
-      setToken(res.token);
+      dispatch(setAccessToken(res.accessToken));
       onClose();
-      // dispatch(setUser(user));
     } catch (error) {
       console.error(error);
     }
-    // Получить user info (например, через /me) и сохранить:
-    // dispatch(setUser(user));
   };
 
   if (!isOpen) {
@@ -36,7 +35,7 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-gray-800 rounded-lg p-6 w-80 max-w-full">
+      <div className="bg-gray-800 rounded-lg p-6 w-96 max-w-full">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-bold text-white">Вход в систему</h2>
           <button

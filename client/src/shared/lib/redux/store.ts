@@ -3,6 +3,7 @@ import { configureStore, createListenerMiddleware } from '@reduxjs/toolkit';
 import columnsReducer from '@/entities/column/model/column.slice';
 import tasksReducer from '@/entities/task/models/task.slice';
 import { userApi } from '@/entities/user/api/userApi';
+import authSlice from '@/entities/user/models/auth.slice';
 import userSlice from '@/entities/user/models/user.slice';
 
 const ListenerMiddleware = createListenerMiddleware();
@@ -12,6 +13,7 @@ export const store = configureStore({
     columns: columnsReducer,
     tasks: tasksReducer,
     user: userSlice,
+    auth: authSlice,
     [userApi.reducerPath]: userApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>

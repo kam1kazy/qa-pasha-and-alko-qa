@@ -26,36 +26,53 @@ const app = express();
 app.use(requestIdMiddleware);
 app.use(httpLogger);
 
-// --- Middleware
-app.use(express.json());
-app.use(cookieParser());
+// Безопасность
 app.use(helmetMiddleware);
 app.use(corsMiddleware);
 
-// --- Rate Limiter
-app.use(
-  rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 100,
-    standardHeaders: true,
-    legacyHeaders: false,
-    message: 'Too many requests from this IP',
-  })
-);
+// Ограничение размера запроса (1MB)
+app.use(express.json({ limit: '1mb' }));
+app.use(express.urlencoded({ extended: true, limit: '1mb' }));
 
-app.get('/api/health', (_, res) => {
-  res.json({ status: 'ok' });
+// Rate limiting для всех запросов
+const globalRateLimit = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 минут
+  max: 100, // максимум 100 запросов с одного IP
+  message: {
+    message: 'Too many requests from this IP, please try again later.',
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
 });
 
-app.use('/auth', authRoutes);
-app.use('/tasks', taskRoutes);
-app.use('/sprints', sprintRoutes);
-app.use('/comments', commentRoutes);
-app.use('/columns', kanbanColumnRoutes);
-app.use('/attachments', attachmentRoutes);
-app.use('/user-task-statuses', userTaskStatusRoutes);
-app.use('/user-active-sprints', userActiveSprintRoutes);
+app.use(globalRateLimit);
+
+app.use(cookieParser());
+
+// Swagger
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+// Routes
+app.use('/auth', authRoutes);
+app.use('/api/attachments', attachmentRoutes);
+app.use('/api/comments', commentRoutes);
+app.use('/api/kanban-columns', kanbanColumnRoutes);
+app.use('/api/sprints', sprintRoutes);
+app.use('/api/tasks', taskRoutes);
+app.use('/api/user-active-sprints', userActiveSprintRoutes);
+app.use('/api/user-task-statuses', userTaskStatusRoutes);
+
+// Honeypot endpoint для обнаружения атак
+app.post('/admin-login', (req, res) => {
+  console.warn(
+    '🚨 Honeypot triggered! IP:',
+    req.ip,
+    'User-Agent:',
+    req.headers['user-agent']
+  );
+  // Можно добавить блокировку IP или другие меры
+  res.status(404).json({ message: 'Not found' });
+});
 
 app.use(errorHandler);
 

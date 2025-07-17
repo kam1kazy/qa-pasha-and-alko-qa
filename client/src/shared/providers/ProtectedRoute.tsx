@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '@/shared/lib/auth/useAuth';
 
 export function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { isAuth } = useAuth();
+  const { isAuthenticated } = useAuth();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
 
@@ -19,10 +19,10 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    if (!isLoading && !isAuth) {
+    if (!isLoading && !isAuthenticated) {
       router.replace('/');
     }
-  }, [isAuth, isLoading, router]);
+  }, [isAuthenticated, isLoading, router]);
 
   if (isLoading) {
     return (
@@ -32,7 +32,7 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
     );
   }
 
-  if (!isAuth) {
+  if (!isAuthenticated) {
     return null;
   }
 
