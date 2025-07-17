@@ -93,4 +93,4 @@ export interface UserTaskStatus {
 
 // Перечисления
 export type KanbanDifficulty = 'EASY' | 'MEDIUM' | 'HARD';
-export type TaskStatus = 'TODO' | 'IN_PROGRESS' | 'DONE';
+export type TaskStatus = 'TODO' | 'IN_PROGRESS' | 'DONE' | `APPROVED`;

@@ -2275,7 +2275,7 @@ components:
           description: Идентификатор задачи
         status:
           type: string
-          enum: [TODO, IN_PROGRESS, DONE]
+          enum: [TODO, IN_PROGRESS, DONE, APPROVED]
           description: Статус задачи
       example:
         id: "status123"
@@ -2288,7 +2288,7 @@ components:
       properties:
         status:
           type: string
-          enum: [TODO, IN_PROGRESS, DONE]
+          enum: [TODO, IN_PROGRESS, DONE, APPROVED]
           description: Новый статус задачи
       example:
         status: "DONE"

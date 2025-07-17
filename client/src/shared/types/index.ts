@@ -1,6 +1,6 @@
 export type KanbanDifficultyTypes = 'easy' | 'medium' | 'hard';
 
-export type ColumnsTypes = 'todo' | 'inprogress' | 'completed';
+export type ColumnsTypes = 'todo' | 'inprogress' | 'completed' | `approved`;
 
 export interface Course {
   id: string;
@@ -17,9 +17,10 @@ export interface Sprint {
   updatedAt: string;
 }
 
-export interface KanbanColumn {
+export interface IKanbanColumn {
   id: string;
   title: string;
+  columnId: ColumnsTypes;
 }
 
 export interface UserActiveSprint {
@@ -32,5 +33,5 @@ export interface UserTaskStatus {
   id: string;
   userId: string;
   taskId: string;
-  status: 'TODO' | 'IN_PROGRESS' | 'DONE';
+  status: 'TODO' | 'IN_PROGRESS' | 'DONE' | `APPROVED`;
 }

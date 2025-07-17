@@ -1,0 +1,17 @@
+.dashboard_layout {
+  background: #18181c;
+  min-height: 100vh;
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  height: 100vh;
+}
+.dashboard_main {
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

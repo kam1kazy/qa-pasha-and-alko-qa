@@ -1,8 +1,9 @@
 import { closestCenter, DndContext } from '@dnd-kit/core';
 import { useEffect, useState } from 'react';
 
-import { IKanbanColumn } from '@/entities/task/models/task.types';
 import { useDragEnd } from '@/features/kanban-board/model/useDragEnd';
+
+import { IKanbanColumn } from '../types';
 
 interface KanbanColumnsListProps {
   children: React.ReactNode;

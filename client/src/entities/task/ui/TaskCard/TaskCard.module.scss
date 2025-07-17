@@ -1,5 +1,5 @@
 .card {
-  background-color: #28282f;
+  background-color: #1c1b1f;
   border-radius: 8;
   padding: 12;
   cursor: pointer;
@@ -8,6 +8,8 @@
   flex-direction: column;
   gap: 8;
   position: relative;
+  box-shadow: 0 2px 8px #0002;
+  border: 1px hsl(0deg 0% 80% / 8%) solid;
 }
 
 .card__header {

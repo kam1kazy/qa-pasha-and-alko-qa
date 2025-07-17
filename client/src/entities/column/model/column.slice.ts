@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { IKanbanColumn } from '@/entities/task/models/task.types';
 import { initialColumns } from '@/features/kanban-column/config/columnsList.mockData';
+import { IKanbanColumn } from '@/shared/types';
 
 interface ColumnsState {
   columns: IKanbanColumn[];
