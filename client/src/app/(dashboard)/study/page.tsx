@@ -1,9 +1,9 @@
 'use client';
 
+import Image from 'next/image';
 import { useState } from 'react';
 
 import { KanbanBoard } from '@/features/kanban-board/KanbanBoard';
-import { ProtectedRoute } from '@/shared/providers/ProtectedRoute';
 
 import styles from './page.module.scss';
 
@@ -20,34 +20,34 @@ const TasksPage: React.FC = () => {
   const [activeSprintId] = useState<number>(mockSprints[firstActiveIdx]?.id);
 
   return (
-    <ProtectedRoute>
-      <div className={styles.task_page}>
-        <div className={styles.task_tabs}>
-          {mockSprints.map((sprint) => (
-            <button
-              key={sprint.id}
-              className={
-                styles.task_tab +
-                (activeSprintId === sprint.id ? ' ' + styles.active : '') +
-                (sprint.lock ? ' ' + styles.locked : '')
-              }
-              disabled={sprint.lock}
-            >
-              {sprint.name}
-              {sprint.lock && (
-                <img
-                  src="/images/icons/padlock.svg"
-                  alt="locked"
-                  className={styles.lock_icon}
-                />
-              )}
-            </button>
-          ))}
-        </div>
-        {/* KanbanBoard только для активного спринта */}
-        {activeSprintId && <KanbanBoard />}
+    <div className={styles.task_page}>
+      <div className={styles.task_tabs}>
+        {mockSprints.map((sprint) => (
+          <button
+            key={sprint.id}
+            className={
+              styles.task_tab +
+              (activeSprintId === sprint.id ? ' ' + styles.active : '') +
+              (sprint.lock ? ' ' + styles.locked : '')
+            }
+            disabled={sprint.lock}
+          >
+            {sprint.name}
+            {sprint.lock && (
+              <Image
+                src="/images/icons/padlock.svg"
+                alt="locked"
+                className={styles.lock_icon}
+                width={30}
+                height={30}
+              />
+            )}
+          </button>
+        ))}
       </div>
-    </ProtectedRoute>
+      {/* KanbanBoard только для активного спринта */}
+      {activeSprintId && <KanbanBoard />}
+    </div>
   );
 };
 

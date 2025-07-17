@@ -6,15 +6,15 @@ export interface ITask {
   description: string;
   columnId: ColumnsTypes;
   sprintId: string;
-  progress: number;
-  difficulty: KanbanDifficultyTypes;
-  topics: string[];
+  progress?: number;
+  difficulty?: KanbanDifficultyTypes;
+  topics?: string[];
   commentsCount?: number;
   filesCount?: number;
   dueDate?: string;
-  done: boolean;
+  done?: boolean;
   subtasksCount?: number;
   subtasksDone?: number;
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
 }

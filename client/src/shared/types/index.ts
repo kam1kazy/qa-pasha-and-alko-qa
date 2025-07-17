@@ -18,7 +18,7 @@ export interface Sprint {
 }
 
 export interface IKanbanColumn {
-  id: string;
+  id: ColumnsTypes;
   title: string;
   columnId: ColumnsTypes;
 }

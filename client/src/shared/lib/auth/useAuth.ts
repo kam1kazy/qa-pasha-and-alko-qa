@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect } from 'react';
+import Cookies from 'js-cookie';
+import { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
@@ -12,11 +13,23 @@ import { RootState } from '@/shared/lib/redux/store';
 
 export function useAuth() {
   const dispatch = useDispatch();
-  const { accessToken, isAuthenticated, user } = useSelector(
-    (state: RootState) => state.auth
-  );
+  const { accessToken, user } = useSelector((state: RootState) => state.auth);
   const [refresh] = useRefreshMutation();
   const [logoutApi] = useLogoutMutation();
+
+  // Новый useEffect для инициализации accessToken из куки
+  // Получаем accessToken из cookie при первом монтировании
+  useEffect(() => {
+    if (!accessToken) {
+      const tokenFromCookie = Cookies.get('accessToken');
+      if (tokenFromCookie) {
+        dispatch(setAccessToken(tokenFromCookie));
+      }
+    }
+  }, [accessToken, dispatch]);
+
+  const isAuthenticated = useMemo(() => Boolean(accessToken), [accessToken]);
+  // ← теперь будет правильно, после dispatch
 
   const handleLogout = async () => {
     try {
@@ -40,12 +53,12 @@ export function useAuth() {
     }
   };
 
-  // Автоматический refresh при инициализации приложения
-  useEffect(() => {
-    if (!accessToken && isAuthenticated) {
-      refreshToken();
-    }
-  }, []);
+  // // Автоматический refresh при инициализации приложения
+  // useEffect(() => {
+  //   if (!accessToken && isAuthenticated) {
+  //     refreshToken();
+  //   }
+  // }, []);
 
   return {
     accessToken,

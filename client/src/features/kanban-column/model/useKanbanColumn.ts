@@ -18,10 +18,9 @@ export const useKanbanColumn = (column: IKanbanColumn) => {
       id: Date.now().toString(),
       title: 'New Task',
       description: 'Описание задачи',
-
-      //TODO: Это тупая фигня, зесь должна 100 проц ставится колонка todo (первая)
-      //TODO: По сути, кнопка добавить задачу должна быть вне колонок
-      columnId: column.id,
+      //TODO: наследовать спринт
+      sprintId: 'todo',
+      columnId: 'todo',
     };
     dispatch(addTask({ columnId: column.id, task: newTask }));
   };
