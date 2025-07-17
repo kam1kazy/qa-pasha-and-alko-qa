@@ -13,20 +13,16 @@ export function useAuth() {
   };
 
   useEffect(() => {
-    // Проверяем токен при монтировании
     checkAuth();
 
-    // Слушаем изменения в localStorage
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === 'token') {
         checkAuth();
       }
     };
 
-    // Слушаем события изменения localStorage (для других вкладок)
     window.addEventListener('storage', handleStorageChange);
 
-    // Периодически проверяем токен (каждые 5 секунд)
     const interval = setInterval(checkAuth, 5000);
 
     return () => {
