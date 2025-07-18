@@ -6,7 +6,7 @@ import { AuthModal, useAuthModal } from '@/features/auth-modal';
 import { useAuth } from '@/shared/lib/auth/useAuth';
 
 export default function Home() {
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, logout, isLoading, login } = useAuth();
   const { isOpen, openModal, closeModal } = useAuthModal();
 
   return (
@@ -45,7 +45,12 @@ export default function Home() {
         </main>
       </div>
 
-      <AuthModal isOpen={isOpen} onClose={closeModal} />
+      <AuthModal
+        isOpen={isOpen && !isAuthenticated}
+        login={login}
+        isLoading={isLoading}
+        onClose={closeModal}
+      />
     </>
   );
 }

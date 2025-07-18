@@ -1,31 +1,40 @@
 'use client';
 
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
 
-import { useLoginMutation } from '@/entities/user/api/userApi';
-import { setAccessToken } from '@/entities/user/models/auth.slice';
+type loginType = ({
+  email,
+  password,
+}: {
+  email: string;
+  password: string;
+}) => Promise<false | { accessToken: string }>;
 
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
+  isLoading: boolean;
+  login: loginType;
 }
 
-export function AuthModal({ isOpen, onClose }: AuthModalProps) {
+export function AuthModal({
+  isOpen,
+  onClose,
+  isLoading,
+  login,
+}: AuthModalProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const dispatch = useDispatch();
+  const [error, setError] = useState(false);
 
-  const [login, { isLoading, error }] = useLoginMutation();
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
+    setError(false);
     try {
-      const res = await login({ email, password }).unwrap();
-      dispatch(setAccessToken(res.accessToken));
+      await login({ email, password });
       onClose();
     } catch (error) {
-      console.error(error);
+      setError(true);
+      console.error('Ошибка входа', error);
     }
   };
 
