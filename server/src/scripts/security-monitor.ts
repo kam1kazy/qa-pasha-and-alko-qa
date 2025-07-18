@@ -1,3 +1,4 @@
+import { logger } from '@/config/logger.js';
 import { prisma } from '@/infrastructure/prisma/client.js';
 
 interface SecurityAlert {
@@ -109,7 +110,7 @@ class SecurityMonitor {
     };
 
     this.alerts.push(alert);
-    console.warn(`🚨 SECURITY ALERT: ${message}`, data);
+    logger.warn(`🚨 SECURITY ALERT: ${message}`, data);
 
     // В продакшене здесь можно отправить уведомление в Slack/Email
     // await this.sendNotification(alert);
@@ -117,13 +118,13 @@ class SecurityMonitor {
 
   // Запуск всех проверок
   async runChecks() {
-    console.log('🔍 Running security checks...');
+    logger.info('🛡️ 🔍 Running security checks...');
 
     await this.checkSuspiciousIPs();
     await this.checkTokenReuse();
     await this.checkRateLimitExceeded();
 
-    console.log(
+    logger.info(
       `✅ Security checks completed. Found ${this.alerts.length} alerts.`
     );
 
@@ -152,7 +153,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
       process.exit(0);
     })
     .catch((error) => {
-      console.error('Security monitoring failed:', error);
+      logger.error('Security monitoring failed:', error);
       process.exit(1);
     });
 }

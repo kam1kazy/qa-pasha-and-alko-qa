@@ -1,5 +1,6 @@
 import { prismaService } from './db.js';
 
+import { logger } from '@/config/logger.js';
 import courses from './configs/courses.json' with { type: 'json' };
 import kanbanColumns from './configs/kanbanColumns.json' with { type: 'json' };
 import sprints from './configs/sprints.json' with { type: 'json' };
@@ -9,7 +10,7 @@ import users from './configs/users.json' with { type: 'json' };
 import userTaskStatuses from './configs/userTaskStatuses.json' with { type: 'json' };
 
 const seed = async () => {
-  console.log(`\nPRISMA: 🌾 Выполняем посев данных...`);
+  logger.info(`\nPRISMA: 🌾 Выполняем посев данных...`);
 
 
   // Очистка базы данных
@@ -39,15 +40,15 @@ const seed = async () => {
   // Выводим статистику
   await prismaService.getStats();
 
-  console.log('PRISMA: 🎉 Посев данных успешно завершен!');
+  logger.info('🛡️ PRISMA: 🎉 Посев данных успешно завершен!');
 };
 
 seed()
   .then(() => {
-    console.log('Посев завершен успешно');
+    logger.info('🛡️ Посев завершен успешно');
   })
   .catch((error) => {
-    console.error('Ошибка при посеве:', error);
+    logger.error('Ошибка при посеве:', error);
   });
 
 export default seed;

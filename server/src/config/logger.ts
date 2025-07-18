@@ -39,7 +39,8 @@ const baseLogger = pino(
           options: {
             colorize: true,
             translateTime: 'SYS:standard',
-            ignore: 'pid,hostname',
+            ignore: 'pid,hostname,req,res',
+            minimumLevel: 'error', // только ошибки
           },
         },
   },

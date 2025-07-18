@@ -1,7 +1,7 @@
 import { corsMiddleware } from '@/config/cors.js';
 import { errorHandler } from '@/config/error.handler.js';
 import { helmetMiddleware } from '@/config/helmet.js';
-import { httpLogger, requestIdMiddleware } from '@/config/logger.js';
+import { httpLogger, logger, requestIdMiddleware } from '@/config/logger.js';
 import attachmentRoutes from '@/modules/attachment/attachment.route.js';
 import authRoutes from '@/modules/auth/auth.route.js';
 import commentRoutes from '@/modules/comment/comment.route.js';
@@ -64,11 +64,9 @@ app.use('/api/user-task-statuses', userTaskStatusRoutes);
 
 // Honeypot endpoint для обнаружения атак
 app.post('/admin-login', (req, res) => {
-  console.warn(
-    '🚨 Honeypot triggered! IP:',
-    req.ip,
-    'User-Agent:',
-    req.headers['user-agent']
+  logger.warn(
+    { ip: req.ip, userAgent: req.headers['user-agent'] },
+    '🚨 Honeypot triggered!'
   );
   // Можно добавить блокировку IP или другие меры
   res.status(404).json({ message: 'Not found' });

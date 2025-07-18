@@ -1,14 +1,15 @@
+import { logger } from '@/config/logger.js';
 import { AuthService } from '@/modules/auth/auth.service.js';
 
 const authService = new AuthService();
 
 async function cleanupTokens() {
   try {
-    console.log('🧹 Starting token cleanup...');
+    logger.info('🛡️ 🧹 Starting token cleanup...');
     await authService.cleanupExpiredTokens();
-    console.log('✅ Token cleanup completed');
+    logger.info('🛡️ ✅ Token cleanup completed');
   } catch (error) {
-    console.error('❌ Token cleanup failed:', error);
+    logger.error('❌ Token cleanup failed:', error);
   }
 }
 
