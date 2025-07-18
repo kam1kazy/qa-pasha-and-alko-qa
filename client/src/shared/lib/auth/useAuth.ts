@@ -7,6 +7,7 @@ import {
   useLoginMutation,
   useLogoutMutation,
   useRefreshMutation,
+  useRegisterMutation,
 } from '@/entities/user/api/userApi';
 import {
   logout,
@@ -17,16 +18,20 @@ import {
   setRefreshing,
 } from '@/entities/user/models/auth.slice';
 
+export type userLoginType = { email: string; password: string };
+
 export function useAuth() {
   const dispatch = useDispatch();
   const [refresh, { isLoading: isLoadingRefresh }] = useRefreshMutation();
   const [logoutApi, { isLoading: isLoadingLogout }] = useLogoutMutation();
   const [login, { isLoading: isLoadingLogin }] = useLoginMutation();
+  const [register, { isLoading: isLoadingRegister }] = useRegisterMutation();
   const accessToken = useSelector(selectAccessToken);
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const isRefreshing = useSelector(selectRefreshing);
 
-  const isLoading = isLoadingRefresh || isLoadingLogin || isLoadingLogout;
+  const isLoading =
+    isLoadingRefresh || isLoadingLogin || isLoadingLogout || isLoadingRegister;
   const didRequestRefresh = useRef(false);
 
   const refreshToken = useCallback(async () => {
@@ -43,13 +48,7 @@ export function useAuth() {
     }
   }, [dispatch, refresh]);
 
-  const handleLogin = async ({
-    email,
-    password,
-  }: {
-    email: string;
-    password: string;
-  }) => {
+  const handleLogin = async ({ email, password }: userLoginType) => {
     try {
       const result = await login({ email, password }).unwrap();
       dispatch(setAccessToken(result.accessToken));
@@ -74,6 +73,17 @@ export function useAuth() {
     }
   };
 
+  const handleRegister = async ({ email, password }: userLoginType) => {
+    try {
+      const result = await register({ email, password }).unwrap();
+      handleLogin({ email, password });
+      return result;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+  };
+
   useEffect(() => {
     if (didRequestRefresh.current) {
       return;
@@ -93,6 +103,7 @@ export function useAuth() {
     isAuthenticated,
     logout: handleLogout,
     login: handleLogin,
+    register: handleRegister,
     refreshToken,
     isLoading,
     isRefreshing,

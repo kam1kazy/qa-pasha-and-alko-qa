@@ -1,0 +1,13 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8;
+}
+
+.doneCount {
+  background: #34343c;
+  border-radius: 8;
+  padding: 2px 8px;
+  font-size: 14;
+}

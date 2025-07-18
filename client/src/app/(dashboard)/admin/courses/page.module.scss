@@ -1,0 +1,220 @@
+.container {
+  padding: 0;
+}
+
+.topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32px;
+}
+
+.title {
+  font-size: 2rem;
+}
+
+.addCourseBtn {
+  background: #7c3aed;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 18px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.courses {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+.courseCard {
+  background: #23232b;
+  border-radius: 16px;
+  padding: 24px;
+  min-width: 220px;
+  min-height: 100px;
+  color: #fff;
+  box-shadow: 0 1px 8px #0001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+}
+
+.tasksBlock {
+}
+
+.tasksTitle {
+  font-size: 1.5rem;
+  margin-bottom: 18px;
+}
+
+.sprintsTasksRow {
+  display: flex;
+  gap: 32px;
+}
+
+.sprintsCol {
+  min-width: 180px;
+}
+
+.sprintsHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.sprintsAddBtn {
+  background: #34343c;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 4px 10px;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.sprintsList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sprint {
+  background: #23232b;
+  color: #ccc;
+  border-radius: 10px;
+  padding: 10px 14px;
+  cursor: pointer;
+  font-weight: 400;
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+.sprintActive {
+  background: #7c3aed;
+  color: #fff;
+  font-weight: 600;
+}
+
+.tasksCol {
+  flex: 1;
+  min-width: 220px;
+  max-width: 340px;
+}
+
+.tasksHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.tasksAddBtn {
+  background: #7c3aed;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 4px 14px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.tasksList {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.task {
+  background: #23232b;
+  color: #fff;
+  border-radius: 12px;
+  padding: 18px;
+  font-size: 1rem;
+  box-shadow: 0 1px 8px #0001;
+  cursor: pointer;
+  font-weight: 400;
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+.taskActive {
+  background: #7c3aed;
+  color: #fff;
+  font-weight: 600;
+}
+
+.noTasks {
+  color: #888;
+  font-style: italic;
+  padding: 12px;
+}
+
+.taskDetailsCol {
+  min-width: 320px;
+  max-width: 400px;
+  flex: 1;
+}
+
+.taskDetails {
+  background: #23232b;
+  border-radius: 16px;
+  padding: 28px;
+  color: #fff;
+  box-shadow: 0 1px 8px #0002;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.taskDetailsTitle {
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+.taskDetailsDesc {
+  color: #a3a3a3;
+  font-size: 0.98rem;
+}
+
+.taskDetailsActions {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.taskEditBtn {
+  background: #34343c;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 18px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.taskDeleteBtn {
+  background: #7c3aed;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 18px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.taskDetailsEmpty {
+  color: #888;
+  font-style: italic;
+  padding: 24px;
+  background: #23232b;
+  border-radius: 16px;
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

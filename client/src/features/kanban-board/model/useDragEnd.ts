@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 
 // import { setColumns } from '@/entities/column/model/column.slice';
 import { moveTask } from '@/entities/task/models/task.slice';
-import type { IKanbanColumn } from '@/entities/task/models/task.types';
 import type { RootState } from '@/shared/lib/redux/store';
+import { IKanbanColumn } from '@/shared/types';
 
 interface IProps {
   columns: IKanbanColumn[];
@@ -19,7 +19,7 @@ export const useDragEnd = ({ columns, setDragInProgress }: IProps) => {
   const findTask = (id: string) => {
     for (let colIdx = 0; colIdx < columns.length; colIdx++) {
       const columnId = columns[colIdx].id;
-      const taskList = tasksByColumn[columnId] || [];
+      const taskList = tasksByColumn[columnId] || undefined;
       const taskIdx = taskList.findIndex((t) => t.id === id);
       if (taskIdx !== -1) {
         return {
@@ -67,7 +67,7 @@ export const useDragEnd = ({ columns, setDragInProgress }: IProps) => {
         return;
       }
       const columnId = columns[toColumnIdx].id;
-      toTaskIdx = (tasksByColumn[columnId] || []).length;
+      toTaskIdx = (tasksByColumn[columnId] || undefined).length;
     }
 
     // Не переместили
@@ -78,7 +78,7 @@ export const useDragEnd = ({ columns, setDragInProgress }: IProps) => {
     dispatch(
       moveTask({
         sourceColumnId: columns[from.columnIndex].id,
-        destinationColumnId: columns[toColumnIdx].id,
+        destinationColumnId: columns[toColumnIdx].id as any,
         taskId: from.task.id,
         newIndex: toTaskIdx,
       })

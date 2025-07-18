@@ -1,6 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
 
-import { removeToken } from '@/shared/lib/auth/token';
 import { RootState } from '@/shared/lib/redux/store';
 
 import { clearUser } from '../models/user.slice';
@@ -10,7 +9,6 @@ export function UserInfo() {
   const dispatch = useDispatch();
 
   const handleLogout = () => {
-    removeToken();
     dispatch(clearUser());
     // можно добавить редирект
   };

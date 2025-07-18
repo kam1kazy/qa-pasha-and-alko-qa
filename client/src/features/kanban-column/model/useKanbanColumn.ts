@@ -1,6 +1,7 @@
 'use client';
 
 import { useDispatch, useSelector } from 'react-redux';
+import { createSelector } from 'reselect';
 
 import { addTask } from '@/entities/task/models/task.slice';
 import { ITask } from '@/entities/task/models/task.types';
@@ -9,9 +10,13 @@ import { IKanbanColumn } from '@/shared/types';
 
 export const useKanbanColumn = (column: IKanbanColumn) => {
   const dispatch = useDispatch();
-  const tasks = useSelector(
-    (state: RootState) => state.tasks.tasks[column.id] || []
-  );
+  const selectTasksByColumn = (columnId: string) =>
+    createSelector(
+      (state: RootState) => state.tasks.tasks,
+      (tasks) => tasks[columnId] || undefined
+    );
+
+  const tasks = useSelector(selectTasksByColumn(column.id));
 
   const onAddTask = () => {
     const newTask: ITask = {
