@@ -8,6 +8,14 @@ const Sidebar: React.FC = () => {
   return (
     <aside className={styles.sidebar}>
       <nav className={styles.nav}>
+        <Link href="/" className={styles.icon} title="Главная">
+          <Image
+            src="./images/icons/menu/home.svg"
+            alt="icon"
+            width={32}
+            height={32}
+          />
+        </Link>
         <Link href="/study" className={styles.icon} title="Задачи">
           <Image
             src="./images/icons/menu/graduation.svg"

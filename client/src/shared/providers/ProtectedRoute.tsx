@@ -7,11 +7,13 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
 
+  const wasAuthenticated = localStorage.getItem('wasAuthenticated') === 'true';
+
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
+    if (!isLoading && !isAuthenticated && !wasAuthenticated) {
       router.replace('/');
     }
-  }, [isAuthenticated, isLoading, router]);
+  }, [isAuthenticated, isLoading, router, wasAuthenticated]);
 
   if (isLoading) {
     return <div>Загрузка...</div>;
