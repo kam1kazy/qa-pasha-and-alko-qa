@@ -2,10 +2,10 @@
 
 import { useSelector } from 'react-redux';
 
-import { IKanbanColumn } from '@/entities/task/models/task.types';
 import { KanbanColumn } from '@/features/kanban-column/KanbanColumn';
 import { RootState } from '@/shared/lib/redux/store';
 import { KanbanDndProvider } from '@/shared/providers/KanbanDndProvider';
+import { IKanbanColumn } from '@/shared/types';
 
 import styles from './KanbanBoard.module.scss';
 

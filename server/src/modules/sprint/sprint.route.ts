@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { authMiddleware, requireRole } from '../auth/auth.middleware.js';
 import {
   createSprint,
   deleteSprint,
@@ -9,10 +10,22 @@ import {
 
 const router = Router();
 
-router.post('/', createSprint);
-router.get('/', getAllSprints);
+// Все маршруты требуют аутентификации
+router.use(authMiddleware);
+
+// Создание спринтов - только админы
+router.post('/', requireRole(['ADMIN']), createSprint);
+
+// Получение списка спринтов - все авторизованные пользователи
+router.get('/list', getAllSprints);
+
+// Получение спринта по ID - все авторизованные пользователи
 router.get('/:id', getSprintById);
-router.put('/:id', updateSprint);
-router.delete('/:id', deleteSprint);
+
+// Обновление спринтов - только админы
+router.put('/:id', requireRole(['ADMIN']), updateSprint);
+
+// Удаление спринтов - только админы
+router.delete('/:id', requireRole(['ADMIN']), deleteSprint);
 
 export default router;

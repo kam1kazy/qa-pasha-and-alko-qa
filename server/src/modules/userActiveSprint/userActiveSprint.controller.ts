@@ -12,7 +12,7 @@ export const createUserActiveSprint = async (req: Request, res: Response) => {
     const data = createUserActiveSprintSchema.parse(req.body);
     const activeSprint = await service.create(data);
     res.status(201).json(activeSprint);
-  } catch (err: any) {
+  } catch (err: unknown) {
     res.status(400).json({ message: err.message });
   }
 };
@@ -36,7 +36,7 @@ export const updateUserActiveSprint = async (req: Request, res: Response) => {
     const data = updateUserActiveSprintSchema.parse(req.body);
     const activeSprint = await service.update(id, data);
     res.json(activeSprint);
-  } catch (err: any) {
+  } catch (err: unknown) {
     res.status(400).json({ message: err.message });
   }
 };
@@ -46,7 +46,7 @@ export const deleteUserActiveSprint = async (req: Request, res: Response) => {
     const { id } = req.params;
     await service.delete(id);
     res.status(204).send();
-  } catch (err: any) {
+  } catch (err: unknown) {
     res.status(400).json({ message: err.message });
   }
 };

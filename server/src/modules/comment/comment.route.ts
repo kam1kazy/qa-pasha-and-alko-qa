@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { authMiddleware, requireRole } from '../auth/auth.middleware.js';
 import {
   createComment,
   deleteComment,
@@ -9,10 +10,22 @@ import {
 
 const router = Router();
 
+// Все маршруты требуют аутентификации
+router.use(authMiddleware);
+
+// Создание комментариев - все авторизованные пользователи
 router.post('/', createComment);
-router.get('/', getAllComments);
+
+// Получение списка комментариев - все авторизованные пользователи
+router.get('/list', getAllComments);
+
+// Получение комментария по ID - все авторизованные пользователи
 router.get('/:id', getCommentById);
+
+// Обновление комментариев - только автор или админы/менеджеры
 router.put('/:id', updateComment);
-router.delete('/:id', deleteComment);
+
+// Удаление комментариев - только автор или админы
+router.delete('/:id', requireRole(['ADMIN', 'MANAGER']), deleteComment);
 
 export default router;

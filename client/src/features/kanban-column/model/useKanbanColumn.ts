@@ -3,8 +3,9 @@
 import { useDispatch, useSelector } from 'react-redux';
 
 import { addTask } from '@/entities/task/models/task.slice';
-import { IKanbanColumn, ITask } from '@/entities/task/models/task.types';
+import { ITask } from '@/entities/task/models/task.types';
 import { RootState } from '@/shared/lib/redux/store';
+import { IKanbanColumn } from '@/shared/types';
 
 export const useKanbanColumn = (column: IKanbanColumn) => {
   const dispatch = useDispatch();

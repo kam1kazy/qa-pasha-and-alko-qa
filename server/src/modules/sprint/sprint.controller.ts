@@ -9,7 +9,7 @@ export const createSprint = async (req: Request, res: Response) => {
     const data = createSprintSchema.parse(req.body);
     const sprint = await service.create(data);
     res.status(201).json(sprint);
-  } catch (err: any) {
+  } catch (err: unknown) {
     res.status(400).json({ message: err.message });
   }
 };
@@ -32,7 +32,7 @@ export const updateSprint = async (req: Request, res: Response) => {
     const data = updateSprintSchema.parse(req.body);
     const sprint = await service.update(id, data);
     res.json(sprint);
-  } catch (err: any) {
+  } catch (err: unknown) {
     res.status(400).json({ message: err.message });
   }
 };
@@ -42,7 +42,7 @@ export const deleteSprint = async (req: Request, res: Response) => {
     const { id } = req.params;
     await service.delete(id);
     res.status(204).send();
-  } catch (err: any) {
+  } catch (err: unknown) {
     res.status(400).json({ message: err.message });
   }
 };

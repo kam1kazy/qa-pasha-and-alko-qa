@@ -10,11 +10,11 @@ export class AttachmentService {
   }
 
   async getAll() {
-    return prisma.attachment.findMany();
+    return prisma.attachment.findMany({ where: { deletedAt: null } });
   }
 
   async getById(id: string) {
-    return prisma.attachment.findUnique({ where: { id } });
+    return prisma.attachment.findFirst({ where: { id, deletedAt: null } });
   }
 
   async update(id: string, data: UpdateAttachmentDto) {
@@ -22,6 +22,10 @@ export class AttachmentService {
   }
 
   async delete(id: string) {
-    return prisma.attachment.delete({ where: { id } });
+    // Soft-delete
+    return prisma.attachment.update({
+      where: { id },
+      data: { deletedAt: new Date() },
+    });
   }
 }

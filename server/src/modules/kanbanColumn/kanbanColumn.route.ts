@@ -10,7 +10,7 @@ import {
 const router = Router();
 
 router.post('/', createKanbanColumn);
-router.get('/', getAllKanbanColumns);
+router.get('/list', getAllKanbanColumns);
 router.get('/:id', getKanbanColumnById);
 router.put('/:id', updateKanbanColumn);
 router.delete('/:id', deleteKanbanColumn);

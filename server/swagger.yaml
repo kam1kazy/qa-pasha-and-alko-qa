@@ -1,0 +1,2389 @@
+openapi: 3.0.0
+info:
+  title: QA Pasha & Alko API
+  version: 1.0.0
+  description: API для управления задачами, спринтами, колонками, комментариями, вложениями и ролями пользователей в обучающей платформе с RBAC.
+
+paths:
+  /auth/login:
+    post:
+      summary: Вход пользователя
+      description: Аутентификация пользователя. Возвращает access-токен. Refresh-токен устанавливается в httpOnly cookie.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginDto'
+            example:
+              email: "user@example.com"
+              password: "stringPassword123"
+      responses:
+        '200':
+          description: Успешный вход
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                    description: JWT access-токен
+                example:
+                  accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...; HttpOnly; Secure; SameSite=Strict
+        '400':
+          description: Неверный формат данных
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Неверный формат email или пароля"
+        '401':
+          description: Неверные учетные данные
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Неверные учетные данные"
+
+  /auth/register:
+    post:
+      summary: Регистрация пользователя
+      description: Регистрирует нового пользователя. Возвращает access-токен. Refresh-токен устанавливается в httpOnly cookie.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterDto'
+            example:
+              email: "user@example.com"
+              password: "stringPassword123"
+      responses:
+        '201':
+          description: Успешная регистрация
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                    description: JWT access-токен
+                example:
+                  accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...; HttpOnly; Secure; SameSite=Strict
+        '400':
+          description: Неверный формат данных
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Неверный формат email или пароля"
+        '409':
+          description: Пользователь с таким email уже существует
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Пользователь с таким email уже зарегистрирован"
+
+  /auth/refresh:
+    post:
+      summary: Обновление токенов
+      description: Обновляет access-токен с использованием refresh-токена из httpOnly cookie.
+      responses:
+        '200':
+          description: Токены успешно обновлены
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                    description: Новый JWT access-токен
+                example:
+                  accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...; HttpOnly; Secure; SameSite=Strict
+        '401':
+          description: Неверный или истекший refresh-токен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Неверный или истекший refresh-токен"
+      security:
+        - cookieAuth: []
+
+  /auth/assign-role:
+    post:
+      summary: Назначение роли в курсе
+      description: Назначает пользователю роль в указанном курсе. Доступно только для ADMIN курса.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssignRoleDto'
+            example:
+              userId: "user123"
+              courseId: "course456"
+              role: "MANAGER"
+      responses:
+        '201':
+          description: Роль успешно назначена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseRoleDto'
+              example:
+                id: "role789"
+                userId: "user123"
+                courseId: "course456"
+                role: "MANAGER"
+        '400':
+          description: Неверный формат данных
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Неверный формат данных"
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Только ADMIN может назначать роли"
+        '404':
+          description: Пользователь или курс не найдены
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Пользователь или курс не найдены"
+        '409':
+          description: Роль уже назначена или ограничение на ADMIN
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Роль уже назначена или нельзя назначить второго ADMIN"
+      security:
+        - bearerAuth: []
+
+  /auth/assign-roles/bulk:
+    post:
+      summary: Массовое назначение ролей
+      description: Назначает роли группе пользователей в курсе. Доступно только для ADMIN курса.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/AssignRoleDto'
+            example:
+              - userId: "user123"
+                courseId: "course456"
+                role: "STUDENT"
+              - userId: "user789"
+                courseId: "course456"
+                role: "STUDENT"
+      responses:
+        '201':
+          description: Роли успешно назначены
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CourseRoleDto'
+              example:
+                - id: "role789"
+                  userId: "user123"
+                  courseId: "course456"
+                  role: "STUDENT"
+                - id: "role790"
+                  userId: "user789"
+                  courseId: "course456"
+                  role: "STUDENT"
+        '400':
+          description: Неверный формат данных
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Неверный формат данных"
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Только ADMIN может назначать роли"
+        '404':
+          description: Пользователь или курс не найдены
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Пользователь или курс не найдены"
+      security:
+        - bearerAuth: []
+
+  /tasks:
+    post:
+      summary: Создать задачу
+      description: Создает новую задачу в системе. Доступно для ADMIN или MANAGER курса.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTaskDto'
+            example:
+              title: "Создать документацию Swagger"
+              description: "Добавить документацию для API"
+              columnId: "col123"
+              sprintId: "spr456"
+              difficulty: "MEDIUM"
+              topics: ["Документация", "Swagger"]
+              dueDate: "2024-07-01T12:00:00Z"
+              subtasksCount: 3
+      responses:
+        '201':
+          description: Задача успешно создана
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateTaskDto'
+              example:
+                id: "task123"
+                title: "Создать документацию Swagger"
+                description: "Добавить документацию для API"
+                columnId: "col123"
+                sprintId: "spr456"
+                difficulty: "MEDIUM"
+                topics: ["Документация", "Swagger"]
+                dueDate: "2024-07-01T12:00:00Z"
+                subtasksCount: 3
+        '400':
+          description: Неверный формат данных
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Неверный формат данных"
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Требуется роль ADMIN или MANAGER"
+        '404':
+          description: Колонка или спринт не найдены
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Колонка или спринт не найдены"
+      security:
+        - bearerAuth: []
+
+  /tasks/list:
+    get:
+      summary: Получить все задачи
+      description: Возвращает список всех задач, доступных пользователю в зависимости от его роли и курса.
+      responses:
+        '200':
+          description: Список задач
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CreateTaskDto'
+              example:
+                - id: "task123"
+                  title: "Создать документацию Swagger"
+                  description: "Добавить документацию для API"
+                  columnId: "col123"
+                  sprintId: "spr456"
+                  difficulty: "MEDIUM"
+                  topics: ["Документация", "Swagger"]
+                  dueDate: "2024-07-01T12:00:00Z"
+                  subtasksCount: 3
+        '401':
+          description: Неавторизован
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Требуется авторизация"
+      security:
+        - bearerAuth: []
+
+  /tasks/{id}:
+    get:
+      summary: Получить задачу по ID
+      description: Возвращает информацию о задаче. Доступ зависит от роли и курса.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Идентификатор задачи
+      responses:
+        '200':
+          description: Информация о задаче
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateTaskDto'
+              example:
+                id: "task123"
+                title: "Создать документацию Swagger"
+                description: "Добавить документацию для API"
+                columnId: "col123"
+                sprintId: "spr456"
+                difficulty: "MEDIUM"
+                topics: ["Документация", "Swagger"]
+                dueDate: "2024-07-01T12:00:00Z"
+                subtasksCount: 3
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Доступ к задаче запрещен"
+        '404':
+          description: Задача не найдена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Задача не найдена"
+      security:
+        - bearerAuth: []
+    put:
+      summary: Обновить задачу
+      description: Обновляет задачу. Доступно для ADMIN или MANAGER курса.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Идентификатор задачи
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTaskDto'
+            example:
+              title: "Обновить документацию Swagger"
+              done: true
+              progress: 100
+      responses:
+        '200':
+          description: Задача успешно обновлена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateTaskDto'
+              example:
+                title: "Обновить документацию Swagger"
+                done: true
+                progress: 100
+        '400':
+          description: Неверный формат данных
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Неверный формат данных"
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Требуется роль ADMIN или MANAGER"
+        '404':
+          description: Задача не найдена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Задача не найдена"
+      security:
+        - bearerAuth: []
+    delete:
+      summary: Удалить задачу (soft-delete)
+      description: Помечает задачу как удаленную (устанавливает deletedAt). Доступно для ADMIN или MANAGER.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Идентификатор задачи
+      responses:
+        '204':
+          description: Задача успешно помечена как удаленная
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Требуется роль ADMIN или MANAGER"
+        '404':
+          description: Задача не найдена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Задача не найдена"
+      security:
+        - bearerAuth: []
+
+  /tasks/{id}/restore:
+    patch:
+      summary: Восстановить задачу
+      description: Восстанавливает soft-deleted задачу, устанавливая deletedAt в null. Доступно для ADMIN.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Идентификатор задачи
+      responses:
+        '200':
+          description: Задача успешно восстановлена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateTaskDto'
+              example:
+                id: "task123"
+                title: "Создать документацию Swagger"
+                description: "Добавить документацию для API"
+                columnId: "col123"
+                sprintId: "spr456"
+                difficulty: "MEDIUM"
+                topics: ["Документация", "Swagger"]
+                dueDate: "2024-07-01T12:00:00Z"
+                subtasksCount: 3
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Требуется роль ADMIN"
+        '404':
+          description: Задача не найдена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Задача не найдена"
+      security:
+        - bearerAuth: []
+
+  /tasks/{id}/review:
+    post:
+      summary: Ревью задачи
+      description: Проверяет задачу и устанавливает статус ревью. Доступно для MANAGER или ADMIN курса.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Идентификатор задачи
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewTaskDto'
+            example:
+              status: "APPROVED"
+              comment: "Отличная работа!"
+      responses:
+        '200':
+          description: Задача успешно проверена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReviewTaskDto'
+              example:
+                status: "APPROVED"
+                comment: "Отличная работа!"
+        '400':
+          description: Неверный формат данных
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Неверный формат данных"
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Требуется роль MANAGER или ADMIN"
+        '404':
+          description: Задача не найдена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Задача не найдена"
+      security:
+        - bearerAuth: []
+
+  /sprints:
+    post:
+      summary: Создать спринт
+      description: Создает новый спринт в системе. Доступно для ADMIN или MANAGER курса.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSprintDto'
+            example:
+              title: "Спринт 1"
+      responses:
+        '201':
+          description: Спринт успешно создан
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateSprintDto'
+              example:
+                id: "spr456"
+                title: "Спринт 1"
+        '400':
+          description: Неверный формат данных
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Неверный формат данных"
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Требуется роль ADMIN или MANAGER"
+      security:
+        - bearerAuth: []
+
+  /sprints/list:
+    get:
+      summary: Получить все спринты
+      description: Возвращает список всех спринтов, доступных пользователю в зависимости от его роли и курса.
+      responses:
+        '200':
+          description: Список спринтов
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CreateSprintDto'
+              example:
+                - id: "spr456"
+                  title: "Спринт 1"
+        '401':
+          description: Неавторизован
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Требуется авторизация"
+      security:
+        - bearerAuth: []
+
+  /sprints/{id}:
+    get:
+      summary: Получить спринт по ID
+      description: Возвращает информацию о спринте. Доступ зависит от роли и курса.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Идентификатор спринта
+      responses:
+        '200':
+          description: Информация о спринте
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateSprintDto'
+              example:
+                id: "spr456"
+                title: "Спринт 1"
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Доступ к спринту запрещен"
+        '404':
+          description: Спринт не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Спринт не найден"
+      security:
+        - bearerAuth: []
+    put:
+      summary: Обновить спринт
+      description: Обновляет спринт. Доступно для ADMIN или MANAGER курса.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Идентификатор спринта
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateSprintDto'
+            example:
+              title: "Спринт 2"
+      responses:
+        '200':
+          description: Спринт успешно обновлен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateSprintDto'
+              example:
+                title: "Спринт 2"
+        '400':
+          description: Неверный формат данных
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Неверный формат данных"
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Требуется роль ADMIN или MANAGER"
+        '404':
+          description: Спринт не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Спринт не найден"
+      security:
+        - bearerAuth: []
+    delete:
+      summary: Удалить спринт
+      description: Удаляет спринт. Доступно для ADMIN курса.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Идентификатор спринта
+      responses:
+        '204':
+          description: Спринт успешно удален
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Требуется роль ADMIN"
+        '404':
+          description: Спринт не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Спринт не найден"
+      security:
+        - bearerAuth: []
+
+  /comments:
+    post:
+      summary: Создать комментарий
+      description: Добавляет новый комментарий к задаче. Доступно для пользователей с ролью в курсе.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCommentDto'
+            example:
+              text: "Отличная работа!"
+              taskId: "task123"
+              userId: "user456"
+      responses:
+        '201':
+          description: Комментарий успешно создан
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateCommentDto'
+              example:
+                id: "comment789"
+                text: "Отличная работа!"
+                taskId: "task123"
+                userId: "user456"
+        '400':
+          description: Неверный формат данных
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Неверный формат данных"
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Требуется роль в курсе"
+        '404':
+          description: Задача или пользователь не найдены
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Задача или пользователь не найдены"
+      security:
+        - bearerAuth: []
+
+  /comments/list:
+    get:
+      summary: Получить все комментарии
+      description: Возвращает список всех комментариев, доступных пользователю в зависимости от роли и курса.
+      responses:
+        '200':
+          description: Список комментариев
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CreateCommentDto'
+              example:
+                - id: "comment789"
+                  text: "Отличная работа!"
+                  taskId: "task123"
+                  userId: "user456"
+        '401':
+          description: Неавторизован
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Требуется авторизация"
+      security:
+        - bearerAuth: []
+
+  /comments/{id}:
+    get:
+      summary: Получить комментарий по ID
+      description: Возвращает информацию о комментарии. Доступ зависит от роли и курса.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Идентификатор комментария
+      responses:
+        '200':
+          description: Информация о комментарии
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateCommentDto'
+              example:
+                id: "comment789"
+                text: "Отличная работа!"
+                taskId: "task123"
+                userId: "user456"
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Доступ к комментарию запрещен"
+        '404':
+          description: Комментарий не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Комментарий не найден"
+      security:
+        - bearerAuth: []
+    put:
+      summary: Обновить комментарий
+      description: Обновляет комментарий. Доступно для автора комментария или ADMIN/MANAGER курса.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Идентификатор комментария
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCommentDto'
+            example:
+              text: "Исправил замечания"
+      responses:
+        '200':
+          description: Комментарий успешно обновлен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateCommentDto'
+              example:
+                text: "Исправил замечания"
+        '400':
+          description: Неверный формат данных
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Неверный формат данных"
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Требуется роль ADMIN, MANAGER или автор комментария"
+        '404':
+          description: Комментарий не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Комментарий не найден"
+      security:
+        - bearerAuth: []
+    delete:
+      summary: Удалить комментарий (soft-delete)
+      description: Помечает комментарий как удаленный (устанавливает deletedAt). Доступно для автора или ADMIN/MANAGER.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Идентификатор комментария
+      responses:
+        '204':
+          description: Комментарий успешно помечен как удаленный
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Требуется роль ADMIN, MANAGER или автор комментария"
+        '404':
+          description: Комментарий не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Комментарий не найден"
+      security:
+        - bearerAuth: []
+
+  /comments/{id}/restore:
+    patch:
+      summary: Восстановить комментарий
+      description: Восстанавливает soft-deleted комментарий, устанавливая deletedAt в null. Доступно для ADMIN.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Идентификатор комментария
+      responses:
+        '200':
+          description: Комментарий успешно восстановлен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateCommentDto'
+              example:
+                id: "comment789"
+                text: "Отличная работа!"
+                taskId: "task123"
+                userId: "user456"
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Требуется роль ADMIN"
+        '404':
+          description: Комментарий не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Комментарий не найден"
+      security:
+        - bearerAuth: []
+
+  /columns:
+    post:
+      summary: Создать колонку
+      description: Создает новую колонку в канбан-доске. Доступно для ADMIN или MANAGER курса.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateKanbanColumnDto'
+            example:
+              id: "col123"
+              title: "В работе"
+      responses:
+        '201':
+          description: Колонка успешно создана
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateKanbanColumnDto'
+              example:
+                id: "col123"
+                title: "В работе"
+        '400':
+          description: Неверный формат данных
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Неверный формат данных"
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Требуется роль ADMIN или MANAGER"
+      security:
+        - bearerAuth: []
+
+  /columns/list:
+    get:
+      summary: Получить все колонки
+      description: Возвращает список всех колонок, доступных пользователю в зависимости от роли и курса.
+      responses:
+        '200':
+          description: Список колонок
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CreateKanbanColumnDto'
+              example:
+                - id: "col123"
+                  title: "В работе"
+        '401':
+          description: Неавторизован
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Требуется авторизация"
+      security:
+        - bearerAuth: []
+
+  /columns/{id}:
+    get:
+      summary: Получить колонку по ID
+      description: Возвращает информацию о колонке. Доступ зависит от роли и курса.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Идентификатор колонки
+      responses:
+        '200':
+          description: Информация о колонке
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateKanbanColumnDto'
+              example:
+                id: "col123"
+                title: "В работе"
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Доступ к колонке запрещен"
+        '404':
+          description: Колонка не найдена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Колонка не найдена"
+      security:
+        - bearerAuth: []
+    put:
+      summary: Обновить колонку
+      description: Обновляет колонку. Доступно для ADMIN или MANAGER курса.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Идентификатор колонки
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateKanbanColumnDto'
+            example:
+              title: "Готово"
+      responses:
+        '200':
+          description: Колонка успешно обновлена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateKanbanColumnDto'
+              example:
+                title: "Готово"
+        '400':
+          description: Неверный формат данных
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Неверный формат данных"
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Требуется роль ADMIN или MANAGER"
+        '404':
+          description: Колонка не найдена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Колонка не найдена"
+      security:
+        - bearerAuth: []
+    delete:
+      summary: Удалить колонку
+      description: Удаляет колонку. Доступно для ADMIN курса.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Идентификатор колонки
+      responses:
+        '204':
+          description: Колонка успешно удалена
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Требуется роль ADMIN"
+        '404':
+          description: Колонка не найдена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Колонка не найдена"
+      security:
+        - bearerAuth: []
+
+  /attachments:
+    post:
+      summary: Загрузить вложение
+      description: Загружает новое вложение к задаче. Поддерживаются файлы PNG, JPEG, PDF до 5MB. Доступно для пользователей с ролью в курсе.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Файл вложения (PNG, JPEG, PDF, до 5MB)
+                taskId:
+                  type: string
+                  description: Идентификатор задачи
+              required: [file, taskId]
+      responses:
+        '201':
+          description: Вложение успешно создано
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateAttachmentDto'
+              example:
+                id: "attach123"
+                fileUrl: "https://example.com/file.pdf"
+                taskId: "task123"
+        '400':
+          description: Неверный формат или размер файла
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Файл должен быть PNG, JPEG или PDF, до 5MB"
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Требуется роль в курсе"
+        '404':
+          description: Задача не найдена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Задача не найдена"
+      security:
+        - bearerAuth: []
+
+  /attachments/list:
+    get:
+      summary: Получить все вложения
+      description: Возвращает список всех вложений, доступных пользователю в зависимости от роли и курса.
+      responses:
+        '200':
+          description: Список вложений
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CreateAttachmentDto'
+              example:
+                - id: "attach123"
+                  fileUrl: "https://example.com/file.pdf"
+                  taskId: "task123"
+        '401':
+          description: Неавторизован
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Требуется авторизация"
+      security:
+        - bearerAuth: []
+
+  /attachments/{id}:
+    get:
+      summary: Получить вложение по ID
+      description: Возвращает информацию о вложении. Доступ зависит от роли и курса.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Идентификатор вложения
+      responses:
+        '200':
+          description: Информация о вложении
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateAttachmentDto'
+              example:
+                id: "attach123"
+                fileUrl: "https://example.com/file.pdf"
+                taskId: "task123"
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Доступ к вложению запрещен"
+        '404':
+          description: Вложение не найдено
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Вложение не найдено"
+      security:
+        - bearerAuth: []
+    put:
+      summary: Обновить вложение
+      description: Обновляет вложение (замена файла). Поддерживаются файлы PNG, JPEG, PDF до 5MB. Доступно для ADMIN или MANAGER.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Идентификатор вложения
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Новый файл вложения (PNG, JPEG, PDF, до 5MB)
+              required: [file]
+      responses:
+        '200':
+          description: Вложение успешно обновлено
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateAttachmentDto'
+              example:
+                fileUrl: "https://example.com/file2.pdf"
+        '400':
+          description: Неверный формат или размер файла
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Файл должен быть PNG, JPEG или PDF, до 5MB"
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Требуется роль ADMIN или MANAGER"
+        '404':
+          description: Вложение не найдено
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Вложение не найдено"
+      security:
+        - bearerAuth: []
+    delete:
+      summary: Удалить вложение (soft-delete)
+      description: Помечает вложение как удаленное (устанавливает deletedAt). Доступно для ADMIN или MANAGER.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Идентификатор вложения
+      responses:
+        '204':
+          description: Вложение успешно помечено как удаленное
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Требуется роль ADMIN или MANAGER"
+        '404':
+          description: Вложение не найдено
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Вложение не найдено"
+      security:
+        - bearerAuth: []
+
+  /attachments/{id}/restore:
+    patch:
+      summary: Восстановить вложение
+      description: Восстанавливает soft-deleted вложение, устанавливая deletedAt в null. Доступно для ADMIN.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Идентификатор вложения
+      responses:
+        '200':
+          description: Вложение успешно восстановлено
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateAttachmentDto'
+              example:
+                id: "attach123"
+                fileUrl: "https://example.com/file.pdf"
+                taskId: "task123"
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Требуется роль ADMIN"
+        '404':
+          description: Вложение не найдено
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Вложение не найдено"
+      security:
+        - bearerAuth: []
+
+  /user-task-statuses:
+    post:
+      summary: Создать статус задачи пользователя
+      description: Создает новый статус задачи для пользователя. Доступно для пользователей с ролью в курсе.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserTaskStatusDto'
+            example:
+              userId: "user123"
+              taskId: "task456"
+              status: "IN_PROGRESS"
+      responses:
+        '201':
+          description: Статус успешно создан
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateUserTaskStatusDto'
+              example:
+                id: "status123"
+                userId: "user123"
+                taskId: "task456"
+                status: "IN_PROGRESS"
+        '400':
+          description: Неверный формат данных
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Неверный формат данных"
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Требуется роль в курсе"
+        '404':
+          description: Пользователь или задача не найдены
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Пользователь или задача не найдены"
+      security:
+        - bearerAuth: []
+
+  /user-task-statuses/list:
+    get:
+      summary: Получить все статусы задач пользователя
+      description: Возвращает список всех статусов задач пользователя в зависимости от роли и курса.
+      responses:
+        '200':
+          description: Список статусов
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CreateUserTaskStatusDto'
+              example:
+                - id: "status123"
+                  userId: "user123"
+                  taskId: "task456"
+                  status: "IN_PROGRESS"
+        '401':
+          description: Неавторизован
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Требуется авторизация"
+      security:
+        - bearerAuth: []
+
+  /user-task-statuses/{id}:
+    get:
+      summary: Получить статус задачи пользователя по ID
+      description: Возвращает информацию о статусе задачи. Доступ зависит от роли и курса.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Идентификатор статуса
+      responses:
+        '200':
+          description: Информация о статусе
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateUserTaskStatusDto'
+              example:
+                id: "status123"
+                userId: "user123"
+                taskId: "task456"
+                status: "IN_PROGRESS"
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Доступ к статусу запрещен"
+        '404':
+          description: Статус не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Статус не найден"
+      security:
+        - bearerAuth: []
+    put:
+      summary: Обновить статус задачи пользователя
+      description: Обновляет статус задачи пользователя. Доступно для пользователя или ADMIN/MANAGER.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Идентификатор статуса
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserTaskStatusDto'
+            example:
+              status: "DONE"
+      responses:
+        '200':
+          description: Статус успешно обновлен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateUserTaskStatusDto'
+              example:
+                status: "DONE"
+        '400':
+          description: Неверный формат данных
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Неверный формат данных"
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Требуется роль ADMIN, MANAGER или владелец статуса"
+        '404':
+          description: Статус не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Статус не найден"
+      security:
+        - bearerAuth: []
+    delete:
+      summary: Удалить статус задачи пользователя
+      description: Удаляет статус задачи пользователя. Доступно для ADMIN или MANAGER.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Идентификатор статуса
+      responses:
+        '204':
+          description: Статус успешно удален
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Требуется роль ADMIN или MANAGER"
+        '404':
+          description: Статус не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Статус не найден"
+      security:
+        - bearerAuth: []
+
+  /user-active-sprints:
+    post:
+      summary: Создать активный спринт пользователя
+      description: Создает новый активный спринт для пользователя. Доступно для ADMIN или MANAGER.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserActiveSprintDto'
+            example:
+              userId: "user123"
+              sprintId: "spr456"
+      responses:
+        '201':
+          description: Активный спринт успешно создан
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateUserActiveSprintDto'
+              example:
+                id: "activeSprint123"
+                userId: "user123"
+                sprintId: "spr456"
+        '400':
+          description: Неверный формат данных
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Неверный формат данных"
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Требуется роль ADMIN или MANAGER"
+        '404':
+          description: Пользователь или спринт не найдены
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Пользователь или спринт не найдены"
+      security:
+        - bearerAuth: []
+
+  /user-active-sprints/list:
+    get:
+      summary: Получить все активные спринты пользователя
+      description: Возвращает список всех активных спринтов пользователя в зависимости от роли и курса.
+      responses:
+        '200':
+          description: Список активных спринтов
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CreateUserActiveSprintDto'
+              example:
+                - id: "activeSprint123"
+                  userId: "user123"
+                  sprintId: "spr456"
+        '401':
+          description: Неавторизован
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Требуется авторизация"
+      security:
+        - bearerAuth: []
+
+  /user-active-sprints/{id}:
+    get:
+      summary: Получить активный спринт пользователя по ID
+      description: Возвращает информацию об активном спринте. Доступ зависит от роли и курса.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Идентификатор активного спринта
+      responses:
+        '200':
+          description: Информация об активном спринте
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateUserActiveSprintDto'
+              example:
+                id: "activeSprint123"
+                userId: "user123"
+                sprintId: "spr456"
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Доступ к спринту запрещен"
+        '404':
+          description: Активный спринт не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Активный спринт не найден"
+      security:
+        - bearerAuth: []
+    put:
+      summary: Обновить активный спринт пользователя
+      description: Обновляет активный спринт пользователя. Доступно для ADMIN или MANAGER.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Идентификатор активного спринта
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserActiveSprintDto'
+            example:
+              userId: "user123"
+              sprintId: "spr789"
+      responses:
+        '200':
+          description: Активный спринт успешно обновлен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateUserActiveSprintDto'
+              example:
+                userId: "user123"
+                sprintId: "spr789"
+        '400':
+          description: Неверный формат данных
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Неверный формат данных"
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Требуется роль ADMIN или MANAGER"
+        '404':
+          description: Активный спринт не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Активный спринт не найден"
+      security:
+        - bearerAuth: []
+    delete:
+      summary: Удалить активный спринт пользователя
+      description: Удаляет активный спринт пользователя. Доступно для ADMIN или MANAGER.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Идентификатор активного спринта
+      responses:
+        '204':
+          description: Активный спринт успешно удален
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Требуется роль ADMIN или MANAGER"
+        '404':
+          description: Активный спринт не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Активный спринт не найден"
+      security:
+        - bearerAuth: []
+
+  /audit-logs:
+    get:
+      summary: Получить логи аудита
+      description: Возвращает список логов аудита для критичных действий. Доступно только для ADMIN.
+      responses:
+        '200':
+          description: Список логов аудита
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AuditLogDto'
+              example:
+                - id: "log123"
+                  userId: "user123"
+                  action: "RESTORE_TASK"
+                  entity: "Task"
+                  entityId: "task123"
+                  meta: { "details": "Task restored by admin" }
+                  createdAt: "2025-07-17T12:00:00Z"
+        '401':
+          description: Неавторизован
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Требуется авторизация"
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Требуется роль ADMIN"
+      security:
+        - bearerAuth: []
+
+components:
+  schemas:
+    RegisterDto:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+          description: Email пользователя для регистрации
+        password:
+          type: string
+          format: password
+          description: Пароль пользователя (минимум 8 символов)
+      example:
+        email: "user@example.com"
+        password: "stringPassword123"
+
+    LoginDto:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+          description: Email пользователя для входа
+        password:
+          type: string
+          format: password
+          description: Пароль пользователя
+      example:
+        email: "user@example.com"
+        password: "stringPassword123"
+
+    AuthPayload:
+      type: object
+      required: [id, email]
+      properties:
+        id:
+          type: string
+          description: Уникальный идентификатор пользователя
+        email:
+          type: string
+          format: email
+          description: Email пользователя
+      example:
+        id: "user123"
+        email: "user@example.com"
+
+    AssignRoleDto:
+      type: object
+      required: [userId, courseId, role]
+      properties:
+        userId:
+          type: string
+          description: Идентификатор пользователя
+        courseId:
+          type: string
+          description: Идентификатор курса
+        role:
+          type: string
+          enum: [ADMIN, MANAGER, STUDENT]
+          description: Роль пользователя в курсе
+      example:
+        userId: "user123"
+        courseId: "course456"
+        role: "MANAGER"
+
+    CourseRoleDto:
+      type: object
+      required: [id, userId, courseId, role]
+      properties:
+        id:
+          type: string
+          description: Уникальный идентификатор роли в курсе
+        userId:
+          type: string
+          description: Идентификатор пользователя
+        courseId:
+          type: string
+          description: Идентификатор курса
+        role:
+          type: string
+          enum: [ADMIN, MANAGER, STUDENT]
+          description: Роль пользователя в курсе
+        createdAt:
+          type: string
+          format: date-time
+          description: Дата создания роли
+      example:
+        id: "role789"
+        userId: "user123"
+        courseId: "course456"
+        role: "MANAGER"
+        createdAt: "2025-07-17T12:00:00Z"
+
+    CreateKanbanColumnDto:
+      type: object
+      required: [id, title]
+      properties:
+        id:
+          type: string
+          description: Уникальный идентификатор колонки (задается явно)
+        title:
+          type: string
+          description: Название колонки
+      example:
+        id: "col123"
+        title: "В работе"
+
+    UpdateKanbanColumnDto:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Новое название колонки
+      example:
+        title: "Готово"
+
+    CreateAttachmentDto:
+      type: object
+      required: [fileUrl, taskId]
+      properties:
+        id:
+          type: string
+          description: Уникальный идентификатор вложения
+        fileUrl:
+          type: string
+          format: uri
+          description: URL файла вложения
+        taskId:
+          type: string
+          description: Идентификатор задачи, к которой относится вложение
+        deletedAt:
+          type: string
+          format: date-time
+          description: Дата soft-удаления (null, если не удалено)
+          nullable: true
+      example:
+        id: "attach123"
+        fileUrl: "https://example.com/file.pdf"
+        taskId: "task123"
+        deletedAt: null
+
+    UpdateAttachmentDto:
+      type: object
+      properties:
+        fileUrl:
+          type: string
+          format: uri
+          description: Новый URL файла вложения
+      example:
+        fileUrl: "https://example.com/file2.pdf"
+
+    CreateSprintDto:
+      type: object
+      required: [title]
+      properties:
+        id:
+          type: string
+          description: Уникальный идентификатор спринта
+        title:
+          type: string
+          description: Название спринта
+      example:
+        id: "spr456"
+        title: "Спринт 1"
+
+    UpdateSprintDto:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Новое название спринта
+      example:
+        title: "Спринт 2"
+
+    CreateTaskDto:
+      type: object
+      required: [title, description, columnId, sprintId, difficulty]
+      properties:
+        id:
+          type: string
+          description: Уникальный идентификатор задачи
+        title:
+          type: string
+          description: Название задачи
+        description:
+          type: string
+          description: Описание задачи
+        columnId:
+          type: string
+          description: Идентификатор колонки, к которой относится задача
+        sprintId:
+          type: string
+          description: Идентификатор спринта, к которому относится задача
+        difficulty:
+          type: string
+          enum: [EASY, MEDIUM, HARD]
+          description: Уровень сложности задачи
+        topics:
+          type: array
+          items:
+            type: string
+          description: Темы или теги задачи
+        dueDate:
+          type: string
+          format: date-time
+          description: Срок выполнения задачи
+        subtasksCount:
+          type: integer
+          description: Количество подзадач
+        deletedAt:
+          type: string
+          format: date-time
+          description: Дата soft-удаления (null, если не удалено)
+          nullable: true
+      example:
+        id: "task123"
+        title: "Создать документацию Swagger"
+        description: "Добавить документацию для API"
+        columnId: "col123"
+        sprintId: "spr456"
+        difficulty: "MEDIUM"
+        topics: ["Документация", "Swagger"]
+        dueDate: "2024-07-01T12:00:00Z"
+        subtasksCount: 3
+        deletedAt: null
+
+    UpdateTaskDto:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Новое название задачи
+        description:
+          type: string
+          description: Новое описание задачи
+        columnId:
+          type: string
+          description: Новый идентификатор колонки
+        sprintId:
+          type: string
+          description: Новый идентификатор спринта
+        difficulty:
+          type: string
+          enum: [EASY, MEDIUM, HARD]
+          description: Новый уровень сложности задачи
+        topics:
+          type: array
+          items:
+            type: string
+          description: Новые темы или теги задачи
+        dueDate:
+          type: string
+          format: date-time
+          description: Новый срок выполнения задачи
+        done:
+          type: boolean
+          description: Статус завершения задачи
+        subtasksCount:
+          type: integer
+          description: Новое количество подзадач
+        subtasksDone:
+          type: integer
+          description: Количество выполненных подзадач
+        progress:
+          type: integer
+          description: Процент выполнения задачи
+      example:
+        title: "Обновить документацию Swagger"
+        done: true
+        progress: 100
+
+    ReviewTaskDto:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+          enum: [APPROVED, REJECTED, PENDING]
+          description: Статус ревью задачи
+        comment:
+          type: string
+          description: Комментарий к ревью
+          nullable: true
+      example:
+        status: "APPROVED"
+        comment: "Отличная работа!"
+
+    CreateUserActiveSprintDto:
+      type: object
+      required: [userId, sprintId]
+      properties:
+        id:
+          type: string
+          description: Уникальный идентификатор активного спринта
+        userId:
+          type: string
+          description: Идентификатор пользователя
+        sprintId:
+          type: string
+          description: Идентификатор спринта
+      example:
+        id: "activeSprint123"
+        userId: "user123"
+        sprintId: "spr456"
+
+    UpdateUserActiveSprintDto:
+      type: object
+      properties:
+        userId:
+          type: string
+          description: Новый идентификатор пользователя
+        sprintId:
+          type: string
+          description: Новый идентификатор спринта
+      example:
+        userId: "user123"
+        sprintId: "spr789"
+
+    CreateUserTaskStatusDto:
+      type: object
+      required: [userId, taskId, status]
+      properties:
+        id:
+          type: string
+          description: Уникальный идентификатор статуса
+        userId:
+          type: string
+          description: Идентификатор пользователя
+        taskId:
+          type: string
+          description: Идентификатор задачи
+        status:
+          type: string
+          enum: [TODO, IN_PROGRESS, DONE, APPROVED]
+          description: Статус задачи
+      example:
+        id: "status123"
+        userId: "user123"
+        taskId: "task456"
+        status: "IN_PROGRESS"
+
+    UpdateUserTaskStatusDto:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [TODO, IN_PROGRESS, DONE, APPROVED]
+          description: Новый статус задачи
+      example:
+        status: "DONE"
+
+    CreateCommentDto:
+      type: object
+      required: [text, taskId, userId]
+      properties:
+        id:
+          type: string
+          description: Уникальный идентификатор комментария
+        text:
+          type: string
+          description: Текст комментария
+        taskId:
+          type: string
+          description: Идентификатор задачи, к которой относится комментарий
+        userId:
+          type: string
+          description: Идентификатор пользователя, оставившего комментарий
+        deletedAt:
+          type: string
+          format: date-time
+          description: Дата soft-удаления (null, если не удалено)
+          nullable: true
+      example:
+        id: "comment789"
+        text: "Отличная работа!"
+        taskId: "task123"
+        userId: "user456"
+        deletedAt: null
+
+    UpdateCommentDto:
+      type: object
+      properties:
+        text:
+          type: string
+          description: Новый текст комментария
+      example:
+        text: "Исправил замечания"
+
+    AuditLogDto:
+      type: object
+      required: [id, userId, action, entity, entityId]
+      properties:
+        id:
+          type: string
+          description: Уникальный идентификатор лога
+        userId:
+          type: string
+          description: Идентификатор пользователя, выполнившего действие
+        action:
+          type: string
+          description: Тип действия (например, RESTORE_TASK, ASSIGN_ROLE)
+        entity:
+          type: string
+          description: Сущность, над которой выполнено действие (например, Task, CourseRole)
+        entityId:
+          type: string
+          description: Идентификатор сущности
+        meta:
+          type: object
+          description: Дополнительные метаданные действия
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+          description: Дата создания лога
+      example:
+        id: "log123"
+        userId: "user123"
+        action: "RESTORE_TASK"
+        entity: "Task"
+        entityId: "task123"
+        meta: { "details": "Task restored by admin" }
+        createdAt: "2025-07-17T12:00:00Z"
+
+    Error:
+      type: object
+      required: [message]
+      properties:
+        message:
+          type: string
+          description: Описание ошибки
+      example:
+        message: "Произошла ошибка"
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT-токен, передаваемый в заголовке Authorization
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: refreshToken
+      description: Refresh-токен, хранимый в httpOnly cookie

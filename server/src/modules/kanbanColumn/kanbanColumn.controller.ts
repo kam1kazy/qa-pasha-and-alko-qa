@@ -12,7 +12,7 @@ export const createKanbanColumn = async (req: Request, res: Response) => {
     const data = createKanbanColumnSchema.parse(req.body);
     const column = await service.create(data);
     res.status(201).json(column);
-  } catch (err: any) {
+  } catch (err: unknown) {
     res.status(400).json({ message: err.message });
   }
 };
@@ -35,7 +35,7 @@ export const updateKanbanColumn = async (req: Request, res: Response) => {
     const data = updateKanbanColumnSchema.parse(req.body);
     const column = await service.update(id, data);
     res.json(column);
-  } catch (err: any) {
+  } catch (err: unknown) {
     res.status(400).json({ message: err.message });
   }
 };
@@ -45,7 +45,7 @@ export const deleteKanbanColumn = async (req: Request, res: Response) => {
     const { id } = req.params;
     await service.delete(id);
     res.status(204).send();
-  } catch (err: any) {
+  } catch (err: unknown) {
     res.status(400).json({ message: err.message });
   }
 };

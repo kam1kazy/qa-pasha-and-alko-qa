@@ -1,0 +1,154 @@
+.profile_page {
+  max-width: 700px;
+  margin: 32px auto;
+  border-radius: 18px;
+  box-shadow: 0 2px 16px #0002;
+  padding: 32px;
+  color: #fff;
+  transform: translateY(-60px);
+}
+.top_block {
+  display: flex;
+  gap: 32px;
+  align-items: center;
+  margin-bottom: 32px;
+  justify-content: space-between;
+}
+.avatar_section {
+  flex: 0 0 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.avatar_placeholder {
+  width: 215px;
+  height: 215px;
+  background: #23232b;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin-bottom: 12px;
+}
+.avatar_emoji {
+  font-size: 3.5rem;
+}
+.avatar_btn {
+  margin-top: 8px;
+  // background: #23232b;
+  color: #ccc;
+  border: none;
+  border-radius: 8px;
+  padding: 4px 12px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: background 0.2s;
+}
+.avatar_btn:hover {
+  color: #fafafa;
+}
+.stats_section {
+  display: flex;
+  align-items: stretch;
+}
+.progress_card {
+  background: #23232b;
+  border-radius: 16px;
+  padding: 20px 28px;
+  min-width: 260px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 1px 8px #0001;
+}
+.progress_header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.manage_btn {
+  background: #34343c;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 2px 14px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.manage_btn:hover {
+  background: #7c3aed;
+}
+.progress_circle {
+  margin: 12px 0 8px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.progress_percent {
+  font-size: 2.1rem;
+  font-weight: bold;
+}
+.progress_label {
+  color: #a3a3a3;
+  font-size: 0.95rem;
+}
+.progress_stats {
+  display: flex;
+  gap: 24px;
+  margin-top: 10px;
+}
+.stat_num {
+  font-size: 1.2rem;
+  font-weight: bold;
+  display: block;
+  text-align: center;
+}
+.stat_label {
+  color: #a3a3a3;
+  font-size: 0.85rem;
+  display: block;
+  text-align: center;
+}
+.profile_form {
+  margin-top: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.form_row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.profile_input {
+  background: #23232b;
+  color: #fff;
+  border: 1px solid #0002;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 1rem;
+}
+.profile_input:focus {
+  outline: none;
+  border-color: #34343c;
+}
+.password_btn {
+  background: #34343c;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 18px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 8px;
+  align-self: flex-start;
+  transition: background 0.2s;
+}
+.password_btn:hover {
+  background: #7c3aed;
+}

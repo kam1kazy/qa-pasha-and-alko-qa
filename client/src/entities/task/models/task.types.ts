@@ -1,24 +1,20 @@
-export type KanbanDifficulty = 'easy' | 'medium' | 'hard';
-
-export type columnsTypes = 'todo' | 'inprogress' | 'completed';
+import { ColumnsTypes, KanbanDifficultyTypes } from '@/shared/types';
 
 export interface ITask {
   id: string;
   title: string;
   description: string;
-  columnId: columnsTypes;
-  progress?: number; // 0-100
-  difficulty?: KanbanDifficulty;
-  topics?: string[];
+  columnId: ColumnsTypes;
+  sprintId: string;
+  progress: number;
+  difficulty: KanbanDifficultyTypes;
+  topics: string[];
   commentsCount?: number;
   filesCount?: number;
-  dueDate?: string; // ISO string, если нужно
-  done?: boolean;
+  dueDate?: string;
+  done: boolean;
   subtasksCount?: number;
   subtasksDone?: number;
-}
-
-export interface IKanbanColumn {
-  id: columnsTypes;
-  title: string;
+  createdAt: string;
+  updatedAt: string;
 }

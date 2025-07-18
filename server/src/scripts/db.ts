@@ -1,4 +1,6 @@
+import { logger } from '@/config/logger.js';
 import { prisma } from '@/infrastructure/prisma/client.js';
+import { hash } from 'bcrypt';
 
 export class PrismaService {
   private prisma: typeof prisma;
@@ -23,119 +25,126 @@ export class PrismaService {
         this.prisma.user.deleteMany(),
       ]);
 
-      console.log('PRISMA: 🗑 База данных очищена');
+      logger.info('🛡️ PRISMA: 🗑 База данных очищена');
     } catch (error) {
-      console.error('PRISMA: ❌ Ошибка при очистке базы:', error);
+      logger.error('PRISMA: ❌ Ошибка при очистке базы:', error);
     }
   }
 
   // Загрузка пользователей
   async loadUsers(users: any[]) {
     try {
-      console.log(`PRISMA: 📝 Начало загрузки ${users.length} пользователей`);
+      for (const user of users) {
+        // если пароль уже захеширован — пропусти
+        if (!user.password.startsWith('$2b$')) {
+          user.password = await hash(user.password, 10);
+        }
+      }
+
+      logger.info(`PRISMA: 📝 Начало загрузки ${users.length} пользователей`);
       await this.prisma.user.createMany({
         data: users,
         skipDuplicates: true,
       });
-      console.log(`PRISMA: 📊 Итого загружено пользователей: ${users.length}`);
+      logger.info(`PRISMA: 📊 Итого загружено пользователей: ${users.length}`);
     } catch (error) {
-      console.error('PRISMA: ❌ Ошибка при загрузке пользователей:', error);
+      logger.error('PRISMA: ❌ Ошибка при загрузке пользователей:', error);
     }
   }
 
   // Загрузка курсов
   async loadCourses(courses: any[]) {
     try {
-      console.log(`PRISMA: 📝 Начало загрузки ${courses.length} курсов`);
+      logger.info(`PRISMA: 📝 Начало загрузки ${courses.length} курсов`);
       await this.prisma.course.createMany({
         data: courses,
         skipDuplicates: true,
       });
-      console.log(`PRISMA: 📊 Итого загружено курсов: ${courses.length}`);
+      logger.info(`PRISMA: 📊 Итого загружено курсов: ${courses.length}`);
     } catch (error) {
-      console.error('PRISMA: ❌ Ошибка при загрузке курсов:', error);
+      logger.error('PRISMA: ❌ Ошибка при загрузке курсов:', error);
     }
   }
 
   // Загрузка спринтов
   async loadSprints(sprints: any[]) {
     try {
-      console.log(`PRISMA: 📝 Начало загрузки ${sprints.length} спринтов`);
+      logger.info(`PRISMA: 📝 Начало загрузки ${sprints.length} спринтов`);
       await this.prisma.sprint.createMany({
         data: sprints,
         skipDuplicates: true,
       });
-      console.log(`PRISMA: 📊 Итого загружено спринтов: ${sprints.length}`);
+      logger.info(`PRISMA: 📊 Итого загружено спринтов: ${sprints.length}`);
     } catch (error) {
-      console.error('PRISMA: ❌ Ошибка при загрузке спринтов:', error);
+      logger.error('PRISMA: ❌ Ошибка при загрузке спринтов:', error);
     }
   }
 
   // Загрузка колонок Канбан
   async loadKanbanColumns(columns: any[]) {
     try {
-      console.log(
+      logger.info(
         `PRISMA: 📝 Начало загрузки ${columns.length} колонок Канбан`
       );
       await this.prisma.kanbanColumn.createMany({
         data: columns,
         skipDuplicates: true,
       });
-      console.log(
+      logger.info(
         `PRISMA: 📊 Итого загружено колонок Канбан: ${columns.length}`
       );
     } catch (error) {
-      console.error('PRISMA: ❌ Ошибка при загрузке колонок Канбан:', error);
+      logger.error('PRISMA: ❌ Ошибка при загрузке колонок Канбан:', error);
     }
   }
 
   // Загрузка задач
   async loadTasks(tasks: any[]) {
     try {
-      console.log(`PRISMA: 📝 Начало загрузки ${tasks.length} задач`);
+      logger.info(`PRISMA: 📝 Начало загрузки ${tasks.length} задач`);
       await this.prisma.task.createMany({
         data: tasks,
         skipDuplicates: true,
       });
-      console.log(`PRISMA: 📊 Итого загружено задач: ${tasks.length}`);
+      logger.info(`PRISMA: 📊 Итого загружено задач: ${tasks.length}`);
     } catch (error) {
-      console.error('PRISMA: ❌ Ошибка при загрузке задач:', error);
+      logger.error('PRISMA: ❌ Ошибка при загрузке задач:', error);
     }
   }
 
   // Загрузка активных спринтов
   async loadUserActiveSprints(userActiveSprints: any[]) {
     try {
-      console.log(
+      logger.info(
         `PRISMA: 📝 Начало загрузки ${userActiveSprints.length} активных спринтов`
       );
       await this.prisma.userActiveSprint.createMany({
         data: userActiveSprints,
         skipDuplicates: true,
       });
-      console.log(
+      logger.info(
         `PRISMA: 📊 Итого загружено активных спринтов: ${userActiveSprints.length}`
       );
     } catch (error) {
-      console.error('PRISMA: ❌ Ошибка при загрузке активных спринтов:', error);
+      logger.error('PRISMA: ❌ Ошибка при загрузке активных спринтов:', error);
     }
   }
 
   // Загрузка статусов задач
   async loadUserTaskStatuses(userTaskStatuses: any[]) {
     try {
-      console.log(
+      logger.info(
         `PRISMA: 📝 Начало загрузки ${userTaskStatuses.length} статусов задач`
       );
       await this.prisma.userTaskStatus.createMany({
         data: userTaskStatuses,
         skipDuplicates: true,
       });
-      console.log(
+      logger.info(
         `PRISMA: 📊 Итого загружено статусов задач: ${userTaskStatuses.length}`
       );
     } catch (error) {
-      console.error('PRISMA: ❌ Ошибка при загрузке статусов задач:', error);
+      logger.error('PRISMA: ❌ Ошибка при загрузке статусов задач:', error);
     }
   }
 
@@ -171,10 +180,10 @@ export class PrismaService {
         lastUpdate: new Date().toISOString(),
       };
 
-      console.log('PRISMA: 📊 Статистика базы данных:', stats);
+      logger.info('🛡️ PRISMA: 📊 Статистика базы данных:', stats);
       return stats;
     } catch (error) {
-      console.error('PRISMA: ❌ Ошибка при получении статистики:', error);
+      logger.error('PRISMA: ❌ Ошибка при получении статистики:', error);
       return null;
     }
   }

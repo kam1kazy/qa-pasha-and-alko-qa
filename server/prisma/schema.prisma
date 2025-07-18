@@ -12,20 +12,43 @@ model User {
   name           String
   email          String             @unique
   password       String
+  role           UserRole           @default(STUDENT)
+  courseId       String?
+  course         Course?            @relation(fields: [courseId], references: [id])
+  courseRoles    CourseRole[]       // Связь с ролями в курсах
   comments       Comment[]
   taskStatuses   UserTaskStatus[]
   activeSprints  UserActiveSprint[]
+  refreshTokens  RefreshToken[]
+  loginAttempts  LoginAttempt[]
   createdAt      DateTime           @default(now())
   updatedAt      DateTime
   changePassword DateTime
 }
 
 model Course {
+  id          String       @id @default(uuid())
+  title       String
+  description String?
+  ownerId     String?      // ID администратора курса
+  users       User[]
+  courseRoles CourseRole[]
+  sprints     Sprint[] @relation("CourseSprints")
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+// Модель для связи пользователей с курсами и их ролями
+model CourseRole {
   id        String   @id @default(uuid())
-  title     String
-  sprints   Sprint[] @relation("CourseSprints") // Явно именуем отношение
+  userId    String
+  courseId  String
+  role      UserRole
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course    Course   @relation(fields: [courseId], references: [id])
   createdAt DateTime @default(now())
-  updatedAt DateTime
+
+  @@unique([userId, courseId]) // Один пользователь - одна роль в курсе
 }
 
 model Sprint {
@@ -72,9 +95,10 @@ model Task {
   attachments  Attachment[]
   comments     Comment[]
   taskStatuses UserTaskStatus[]
+  deletedAt    DateTime?
 
   createdAt DateTime @default(now())
-  updatedAt DateTime
+  updatedAt DateTime @updatedAt
 }
 
 model KanbanColumn {
@@ -94,6 +118,7 @@ model Attachment {
   fileUrl String
   task    Task   @relation(fields: [taskId], references: [id])
   taskId  String
+  deletedAt DateTime?
 }
 
 model Comment {
@@ -103,9 +128,10 @@ model Comment {
   taskId String
   user   User   @relation(fields: [userId], references: [id])
   userId String
+  deletedAt DateTime?
 
   createdAt DateTime @default(now())
-  updatedAt DateTime
+  updatedAt DateTime @updatedAt
 }
 
 model UserTaskStatus {
@@ -119,8 +145,36 @@ model UserTaskStatus {
   @@unique([userId, taskId]) // Уникальный статус на пару user-task
 }
 
+model RefreshToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  isRevoked Boolean  @default(false)
+  userAgent String?  // User-Agent для дополнительной защиты
+  ipAddress String?  // IP адрес для дополнительной защиты
+}
+
+model LoginAttempt {
+  id        String   @id @default(uuid())
+  email     String
+  ipAddress String
+  success   Boolean
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+}
+
 enum TaskStatus {
   TODO
   IN_PROGRESS
   DONE
+}
+
+enum UserRole {
+  ADMIN
+  MANAGER
+  STUDENT
 }
